@@ -1,29 +1,11 @@
-# README #
+# New Python Project - Starter Repository
 
-This README would normally document whatever steps are necessary to get your application up and running.
+If you want to start a new Python project, you've come to the right place. You only
+need to do these 3 easy steps:
 
-### What is this repository for? ###
+1. Fork this Repository
+2. Fill out a new Confluence page (likely using a template)
+3. Run the script `tasks/sync-template.ps1` in PowerShell. Answer all the questions.
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+That's it! You now have a new repository configured with the latest version of the
+template, and the correct BitBucket configuration.
