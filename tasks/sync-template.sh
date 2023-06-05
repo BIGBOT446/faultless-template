@@ -18,7 +18,6 @@ template_url="https://bitbucket.org/tonkintaylor/python-template"
 # otherwise just call copier directly
 if [ -f ".copier/.copier-answers.yml" ]; then
     python -m copier update "git+$template_url" --UNSAFE
-fi
 else
     python -m pip install pre-commit --upgrade
     python -m pre_commit uninstall
