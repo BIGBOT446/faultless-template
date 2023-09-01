@@ -9,8 +9,8 @@ fi
 # Install pip, and then copier
 python -m ensurepip
 python -m pip install pip --upgrade
-python -m pip install copier --upgrade
-python -m pip install pydantic --upgrade
+python -m pip install "copier < 1.8" # 1.8.2 is broken
+python -m pip install "pydantic < 2" # https://github.com/copier-org/copier/issues/1225
 
 
 template_url="https://bitbucket.org/tonkintaylor/python-template"
