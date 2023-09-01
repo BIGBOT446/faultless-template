@@ -10,7 +10,7 @@ fi
 python -m ensurepip
 python -m pip install pip --upgrade
 python -m pip install copier --upgrade
-python -m pip install "pydantic < 2" # https://github.com/copier-org/copier/issues/1225
+python -m pip install pydantic --upgrade
 
 
 template_url="https://bitbucket.org/tonkintaylor/python-template"
