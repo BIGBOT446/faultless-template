@@ -12,6 +12,6 @@ function RunShFileWithGitBash {
         [Parameter(Mandatory = $true)]
         [string]$ShFilePath
     )
-
-    Start-Process -FilePath $gitBashPath -ArgumentList "--login", "-c", "`"$ShFilePath`"" -NoNewWindow -Wait
+    & $gitBashPath --login -c "`"$ShFilePath`""
+    exit $LASTEXITCODE
 }
