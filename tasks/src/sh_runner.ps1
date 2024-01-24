@@ -4,14 +4,23 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 }
 
 $gitPath = (Get-Command git).Path
-$gitInstallLocation = Split-Path (Split-Path $gitPath) -Parent
-$gitBashPath = Join-Path $gitInstallLocation 'bin\bash.exe'
+# Recursively check parents of gitPath until we find that $parent\bin\bash.exe exists.
+# Otherwise, give up and error out.
+$gitInstallPath = $gitPath
+while ($gitInstallPath -and -not (Test-Path "$gitInstallPath\bin\bash.exe")) {
+    $gitInstallPath = Split-Path $gitInstallPath -Parent
+}
+if (-not $gitInstallPath) {
+    Write-Error "Could not find git bash"
+    exit 1
+}
+$gitBashPath = "$gitInstallPath\bin\bash.exe"
 
 function RunShFileWithGitBash {
     param (
         [Parameter(Mandatory = $true)]
         [string]$ShFilePath
     )
-
-    Start-Process -FilePath $gitBashPath -ArgumentList "--login", "-c", "`"$ShFilePath`"" -NoNewWindow -Wait
+    & $gitBashPath --login -c "`"$ShFilePath`""
+    exit $LASTEXITCODE
 }
