@@ -5,7 +5,7 @@ need to do these 3 easy steps:
 
 1. Fork this Repository
 2. Fill out a new Confluence page (likely using a template)
-3. Run the script `tasks/sync-template.ps1` in PowerShell with your current working directory set to the root of the repository. Answer all the questions.
+3. Run the script `tasks/sync_template.ps1` in PowerShell with your current working directory set to the root of the repository. Answer all the questions.
 
 That's it! You now have a new repository configured with the latest version of the
 template, and the correct BitBucket configuration.
