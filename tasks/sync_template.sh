@@ -38,7 +38,7 @@ tmpdir="$HOME/.ttpytemplatetemp"
 
 # Copy the git repo to a temp directory
 rm -rf $tmpdir
-if ! git clone -b develop $template_url $tmpdir
+if ! git clone -b master $template_url $tmpdir
 then
     echo "Could not clone the template repository"
     rm -rf $tmpdir
