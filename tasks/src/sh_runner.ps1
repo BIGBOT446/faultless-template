@@ -19,8 +19,17 @@ $gitBashPath = "$gitInstallPath\bin\bash.exe"
 function RunShFileWithGitBash {
     param (
         [Parameter(Mandatory = $true)]
-        [string]$ShFilePath
+        [string]$ShFilePath,
+        [Parameter(Mandatory = $false)]
+        [string]$Args
     )
-    & $gitBashPath --login -c "`"$ShFilePath`""
-    exit $LASTEXITCODE
+    $ThisArgs = $Args
+
+    if (-not $ThisArgs) {
+        $ThisArgs = ""
+    }
+
+    $process = Start-Process -FilePath $gitBashPath -ArgumentList "--login", "-c", "`"$ShFilePath $ThisArgs`"" -NoNewWindow -Wait -PassThru
+    $exitCode = $process.ExitCode
+    exit $exitCode
 }
