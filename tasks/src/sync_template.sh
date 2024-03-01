@@ -1,33 +1,42 @@
 echo "Ensuring dependencies are installed..."
 
 # Check whether pyenv is installed
-if ! command -v pyenv &> /dev/null
+output=$(command -v pyenv)
+if [[ -z $output ]]
 then
+    echo $output
     echo "pyenv could not be found"
     echo "Please install pyenv and try again"
     exit
 fi
 
 # Check whether git is installed
-if ! command -v git &> /dev/null
+$output=$(command -v git)
+if [[ -z $output ]]
 then
+    echo $output
     echo "git could not be found"
     echo "Please install git and try again"
     exit
 fi
 
 # Install pip, and then copier
-if ! python -m ensurepip &> /dev/null
+$output=$(python -m ensurepip)
+if [[ -z $output ]]
 then
+    echo $output
     echo "pip could not be installed in your currently activated python installation"
     exit
 fi
-if ! python -m pip install pip --upgrade &> /dev/null
+$output=$(python -m pip install pip --upgrade)
+if [[ -z $output ]]
 then
+    echo $output
     echo "pip could not be upgraded in your currently activated python installation"
     exit
 fi
-if ! python -m pip install "copier >= 9.1.1" --upgrade &> /dev/null
+$output=$(python -m pip install "copier >= 9.1.1" --upgrade)
+if [[ -z $output ]]
 then
     echo "copier >= 9.1.1 could not be installed in your currently activated python installation"
     exit
