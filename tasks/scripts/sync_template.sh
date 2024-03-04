@@ -11,7 +11,7 @@ then
 fi
 
 # Check whether git is installed
-$output=$(command -v git)
+output=$(command -v git)
 if [[ -z $output ]]
 then
     echo $output
@@ -21,21 +21,21 @@ then
 fi
 
 # Install pip, and then copier
-$output=$(python -m ensurepip)
+output=$(python -m ensurepip)
 if [[ -z $output ]]
 then
     echo $output
     echo "pip could not be installed in your currently activated python installation"
     exit
 fi
-$output=$(python -m pip install pip --upgrade)
+output=$(python -m pip install pip --upgrade)
 if [[ -z $output ]]
 then
     echo $output
     echo "pip could not be upgraded in your currently activated python installation"
     exit
 fi
-$output=$(python -m pip install "copier >= 9.1.1" --upgrade)
+output=$(python -m pip install "copier >= 9.1.1" --upgrade)
 if [[ -z $output ]]
 then
     echo "copier >= 9.1.1 could not be installed in your currently activated python installation"
