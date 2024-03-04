@@ -1,2 +1,3 @@
-. ./tasks/src/sh_runner.ps1
-RunShFileWithGitBash -ShFilePath "./tasks/src/sync_template.sh"
+. ./tasks/scripts/sh_runner.ps1
+
+RunShFileWithGitBash -ShFilePath "./tasks/shims/sync_template"
