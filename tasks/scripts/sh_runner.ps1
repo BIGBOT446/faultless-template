@@ -31,5 +31,7 @@ function RunShFileWithGitBash {
 
     $process = Start-Process -FilePath $gitBashPath -ArgumentList "--login", "-c", "`"$ShFilePath $ThisArgs`"" -NoNewWindow -Wait -PassThru
     $exitCode = $process.ExitCode
-    exit $exitCode
+    if ($exitCode -ne 0) {
+        exit $exitCode
+    }
 }
