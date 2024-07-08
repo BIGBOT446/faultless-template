@@ -5,7 +5,7 @@ output=$(command -v pyenv)
 if [[ -z $output ]]
 then
     echo $output
-    echo "pyenv could not be found"
+    echo "Error: pyenv could not be found"
     echo "Please install pyenv and try again"
     exit
 fi
@@ -15,7 +15,7 @@ output=$(command -v git)
 if [[ -z $output ]]
 then
     echo $output
-    echo "git could not be found"
+    echo "Error: git could not be found"
     echo "Please install git and try again"
     exit
 fi
@@ -25,20 +25,20 @@ output=$(python -m ensurepip)
 if [[ -z $output ]]
 then
     echo $output
-    echo "pip could not be installed in your currently activated python installation"
+    echo "Error: pip could not be installed in your currently activated python installation"
     exit
 fi
 output=$(python -m pip install pip --upgrade)
 if [[ -z $output ]]
 then
     echo $output
-    echo "pip could not be upgraded in your currently activated python installation"
+    echo "Error: pip could not be upgraded in your currently activated python installation"
     exit
 fi
 output=$(python -m pip install "copier >= 9.1.1" --upgrade)
 if [[ -z $output ]]
 then
-    echo "copier >= 9.1.1 could not be installed in your currently activated python installation"
+    echo "Error: copier >= 9.1.1 could not be installed in your currently activated python installation"
     exit
 fi
 
@@ -49,17 +49,18 @@ tmpdir="$HOME/.ttpytemplatetemp"
 rm -rf $tmpdir
 if ! git clone --depth 1 -b master $template_url $tmpdir
 then
-    echo "Could not clone the template repository"
+    echo "Error: Could not clone the template repository"
     rm -rf $tmpdir
     exit
 fi
 
 # check whether the .copier/.copier-answers.yml already exists, if so we should update
 # otherwise just call copier directly
-if [ -f ".copier/.copier-answers.yml" ]; then
+if [ -f ".copier/.copier-answers.yml" ]
+then
     if ! python -m copier update "$tmpdir\src\main" --trust
     then
-        echo "Could not update from the template repository"
+        echo "Error: Could not update from the template repository"
         rm -rf $tmpdir
         exit
     fi
@@ -69,7 +70,7 @@ else
     fi
     if ! python -m copier copy "$tmpdir\src\main" . --trust
     then
-        echo "Could not copy the template repository"
+        echo "Error: Could not copy the template repository"
         rm -rf $tmpdir
         exit
     fi
