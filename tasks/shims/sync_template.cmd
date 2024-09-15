@@ -1,7 +1,7 @@
 @ECHO OFF
-WHERE pwsh
+WHERE pwsh > nul 2> nul
 IF %ERRORLEVEL% NEQ 0 (
-    WHERE powershell
+    WHERE powershell > nul 2> nul
     IF %ERRORLEVEL% NEQ 0 (
         C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File "./tasks/shims/sync_template.ps1"
     ) ELSE (
