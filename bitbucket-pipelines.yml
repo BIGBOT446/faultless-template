@@ -1,0 +1,185 @@
+# Defines the Docker image to be used
+image: python:3.12.7 # Please sync with .python-version and README.md
+# Determines how the repository is cloned
+clone:
+  # Full clone retrieves all branches and commits from the repository
+  depth: full
+# Definitions block allows defining reusable pieces of configurations
+definitions:
+  # Defines caches that can be used between builds to speed up build times
+  caches:
+    # Cache for pre-commit hooks
+    pre-commit: ~/.cache/pre-commit
+    # Cache for SonarQube scanner
+    sonar: ~/.sonar
+    # Cache for Azure CLI
+    azure-cli: /usr/local/bin/azure-cli
+    # Caches for installations (e.g. uv)
+    local: ~/.local
+    # Caches for uv
+    uv: /tmp/uv
+    # For download receipts (i.e. for uv self update)
+    uvconfig: ~/.config/uv
+  steps:
+    # Defines the test step
+    - &test_step
+      name: Test Package
+      # Define the caches for this step
+      caches:
+        - local
+        - uv
+        - uvconfig
+        - pre-commit
+      script:
+        - . tasks/scripts/load_backend_env.sh
+        # Setup Python environment via uv
+        - chmod +x tasks/scripts/install_backend.sh
+        - . tasks/scripts/install_backend.sh
+        - uv venv
+
+        # Install requirements
+        - uv pip sync requirements-ci.txt
+
+        # Check critical dependencies are installed
+        - uv pip show pytest
+
+        # Run the test suite with code coverage
+        - mkdir -p ./test-reports
+        - python -m pytest tests -v --cov --cov-report=xml:test-reports/coverage.xml --junitxml=test-reports/report.xml --cov-config=pyproject.toml -n logical
+
+      # Define artifacts to be saved after the build
+      artifacts:
+        - test-reports/coverage.xml
+    # Defines the pre commit step
+    - &precommit_step
+      name: Pre Commit Checks
+      # Define the caches for this step
+      caches:
+        - local
+        - uv
+        - uvconfig
+        - pre-commit
+      script:
+        - . tasks/scripts/load_backend_env.sh
+        # Setup Python environment via uv
+        - chmod +x tasks/scripts/install_backend.sh
+        - . tasks/scripts/install_backend.sh
+        - uv venv
+        - . .venv/bin/activate
+
+        # Install requirements
+        - uv pip sync requirements-ci.txt
+
+        # Check critical dependencies are installed
+        - uv pip show pre-commit
+
+        # Run various tools via pre-commit
+        - pre-commit install
+        - pre-commit run forbidden-copier-rej-files --all-files
+        - pre-commit run forbidden-testpy-files --all-files
+        - pre-commit run validate-pyproject --all-files
+        - pre-commit run ensure-dunder-all --all-files
+        - pre-commit run ruff --all-files
+        - python -m ruff check --select "FIX" # Disabled in pre-commit
+        - pre-commit run ruff-format --all-files
+        - pre-commit run detect-missing-init --all-files
+        - pre-commit run check-added-large-files
+        - pre-commit run trailing-whitespace --all-files
+        - pre-commit run check-merge-conflict --all-files
+        - pre-commit run nbstripout --all-files --hook-stage manual
+        - pre-commit run deptry --all-files
+        - pre-commit run markdownlint-cli2 --all-files
+
+    # Defines the code analysis step
+    - &code_analysis
+      name: Analyse Code Quality
+      # Define the caches for this step
+      caches:
+        - sonar
+      script:
+        # Define the SonarQube project properties
+        - |
+          echo -e "sonar.projectKey=tonkintaylor_py-faultless-template_fc9da0e6-8d82-4eb7-bb9d-c81c6497408a
+          sonar.language=py
+          sonar.python.version=3.12
+          sonar.sources=./src
+          sonar.tests=./tests
+          sonar.python.coverage.reportPaths=./test-reports/coverage.xml
+          sonar.exclusions=**/Dockerfile, src/notebooks/**/*, src/scripts/**/*, src/archive/**/*
+          sonar.verbose=false" > sonar-projects.properties
+        # Run the SonarQube scanner
+        - pipe: sonarsource/sonarqube-scan:3.0.2
+          variables:
+            SONAR_HOST_URL: ${SONAR_HOST_URL}
+            SONAR_TOKEN: ${SONAR_TOKEN}
+            EXTRA_ARGS: '-Dproject.settings=sonar-projects.properties'
+    # Defines the package installation step
+    - &install_package_step
+      name: Install Package
+      script:
+        # Upgrade pip to the latest version
+        - pip install --upgrade pip
+        # Install the package in editable mode
+        - pip install -e .
+    # Defines the wheel building step
+    - &build_wheels_step
+      name: Build Wheels
+      script:
+        # Install the build package
+        - pip install build
+        # Build the wheel
+        - python -m build
+      # Define artifacts to be saved after the build
+      artifacts:
+        - dist/*.whl
+    - &validate_release_branch
+      name: Validate Branch Name
+      script:
+        - chmod +x tasks/scripts/validate_branch_name.sh
+        - tasks/scripts/validate_branch_name.sh $BITBUCKET_BRANCH
+    - &tag_release
+      name: Tag Release
+      script:
+        - chmod +x tasks/scripts/tag_release.sh
+        - tasks/scripts/tag_release.sh
+
+# Defines the pipelines to be used
+pipelines:
+  # Defines the pipeline for pull requests
+  pull-requests:
+    '**': # this will match all branches
+      - step: *validate_release_branch
+      - parallel:
+        - step: *install_package_step
+        - step: *precommit_step
+        - step: *test_step
+        - step: *build_wheels_step
+      - step: *code_analysis
+  # Defines the pipeline for branches
+  branches:
+    develop:
+      - parallel:
+          - step: *install_package_step
+          - step: *precommit_step
+          - step: *test_step
+          - step: *build_wheels_step
+      - step: *code_analysis
+    master:
+      - step: *tag_release
+      - parallel:
+          - step: *install_package_step
+          - step: *precommit_step
+          - step: *test_step
+      - step: *code_analysis
+  # Default pipeline if no other pipeline matches
+  default:
+    - parallel:
+        - step: *install_package_step
+        - step: *precommit_step
+        - step: *test_step
+        - step: *build_wheels_step
+  # Custom pipelines
+  custom:
+    Analyse Code Quality:
+      - step: *test_step
+      - step: *code_analysis
