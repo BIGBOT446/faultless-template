@@ -16,8 +16,8 @@ class MissingDefaultConfigError(Exception):
 
 def get(
     value: str | None = None,
-    config: str = "default",
-    file: str = "config.yml",
+    config: str | None = None,
+    file: str | Path = "config.yml",
     *,
     use_parent: bool = True,
 ) -> Any:
@@ -41,7 +41,9 @@ def get(
 
     Args:
         value: Name of the value to read (None to read all values).
-        config: Name of the configuration to read from. Defaults to "default".
+        config: The environment or configuration name to load. If None,
+            the environment is determined by the CONFIG_ACTIVE environment variable
+            or defaults to "default".
         file: Configuration file to read from (defaults to "config.yml"). If the file
             isn't found at the location specified, then parent directories are
             searched for a file of the same name.
@@ -54,6 +56,9 @@ def get(
     """
     config_file = find_config_file(file, use_parent=use_parent)
 
+    if config is None:
+        config = os.getenv("CONFIG_ACTIVE", default="default")
+
     with config_file.open(mode="r", encoding="utf-8") as config_file_handle:
         config_data = yaml.safe_load(config_file_handle)
 
@@ -64,7 +69,10 @@ def get(
     default_config = config_data["default"]
     environment_config = config_data.get(config, {})
 
-    merged_config = {**default_config, **environment_config}
+    if default_config:
+        merged_config = {**default_config, **environment_config}
+    else:
+        merged_config = environment_config
 
     merged_config = replace_env_vars(merged_config)
 
@@ -88,7 +96,7 @@ def find_config_file(file: str, *, use_parent: bool) -> Path:
     Returns:
         The absolute path of the found configuration file.
     """
-    current_path = Path().resolve()
+    current_path = Path().cwd()
 
     while current_path is not None:
         config_file = current_path / file

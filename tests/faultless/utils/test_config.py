@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from faultless.utils.config import (
-    MissingDefaultConfigError,
+from base.utils.config import (  # Adjusted import to correct path
+    MissingDefaultConfigError,  # Added import for the exception
     find_config_file,
     get,
     replace_env_vars,

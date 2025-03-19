@@ -1,5 +1,10 @@
 # Copilot Instructions
 
+## Jira and Confluence
+
+- The main Confluence page is https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737
+- The main Jira page is https://tonkintaylor.atlassian.net/jira/software/projects/CAPSTONE/
+
 ## Development & Environment
 - Use Windows for development and Linux for deployment. Ensure code is platform-agnostic.
 - Use Python 3.12.
