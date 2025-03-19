@@ -35,17 +35,4 @@ then
             exit 1
         fi
     fi
-
-    # Ensure we create or reuse a virtual environment
-    if [ ! -d ".venv" ]; then
-        echo "Creating virtual environment..."
-        uv venv
-    fi
-
-    # Export VIRTUAL_ENV to help identify and use the virtual environment
-    export VIRTUAL_ENV="$(pwd)/.venv"
-    export PATH="$VIRTUAL_ENV/bin:$PATH"
-    
-    # This sets PYTHONPATH to help find packages
-    export PYTHONPATH="$(pwd):$PYTHONPATH"
 fi
