@@ -36,6 +36,7 @@ definitions:
         - chmod +x tasks/scripts/install_backend.sh
         - . tasks/scripts/install_backend.sh
         - uv venv
+        - . .venv/bin/activate
 
         # Install requirements
         - uv pip sync requirements-ci.txt
