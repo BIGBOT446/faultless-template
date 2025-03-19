@@ -69,7 +69,7 @@ gitpython==3.1.44
     #   pre-commit-update
 identify==2.6.9
     # via pre-commit
-iniconfig==2.0.0
+iniconfig==2.1.0
     # via pytest
 ipykernel==6.29.5
     # via faultless (pyproject.toml)
@@ -156,7 +156,7 @@ pillow==11.1.0
     # via matplotlib
 pip==25.0.1
     # via faultless (pyproject.toml)
-platformdirs==4.3.6
+platformdirs==4.3.7
     # via
     #   copier
     #   jupyter-core
@@ -165,7 +165,7 @@ pluggy==1.5.0
     # via pytest
 plumbum==1.9.0
     # via copier
-pre-commit==4.1.0
+pre-commit==4.2.0
     # via faultless (pyproject.toml)
 pre-commit-update==0.6.1
     # via faultless (pyproject.toml)
@@ -238,9 +238,9 @@ ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
 ruff==0.5.1
     # via faultless (pyproject.toml)
-setuptools==76.1.0
+setuptools==77.0.1
     # via setuptools-scm
-setuptools-scm==8.2.0
+setuptools-scm==8.2.1
     # via faultless (pyproject.toml)
 six==1.17.0
     # via python-dateutil
