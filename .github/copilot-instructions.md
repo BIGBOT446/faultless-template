@@ -3,6 +3,11 @@
 ## Git Branching ans Strategy
 
 - We use the [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) branching strategy.
+- Use gitflow commands to create branches:
+  - `git flow feature start <feature_name>`
+  - `git flow feature finish <feature_name>`
+  - `git flow release start <release_name>`
+  - `git flow release finish <release_name>`
 - The main branch is `master`, and all development is done in feature branches. Feature branches are merged into `develop` when complete.
 - Upon release, we breanch off `develop` into a release branch. This branch is used for final testing and bug fixes before merging into `master`, and then `master` is merged back into `develop`.
 
