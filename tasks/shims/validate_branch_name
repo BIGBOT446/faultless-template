@@ -1,0 +1,2 @@
+#!/bin/bash
+source ./tasks/scripts/validate_branch_name.sh

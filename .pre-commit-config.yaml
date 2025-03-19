@@ -1,0 +1,96 @@
+default_stages: [pre-commit, pre-merge-commit, pre-push, prepare-commit-msg, commit-msg, post-checkout,
+  post-commit, post-merge, post-rewrite, manual]
+ci:
+  autofix_prs: false
+repos:
+-   repo: local
+    hooks:
+      # Prevent committing .rej files from copier
+    -   id: forbidden-copier-rej-files
+        name: forbidden copier rej files
+        entry: found Copier update rejection files; review them and remove them
+        language: fail
+        files: "\\.rej$"
+
+-   repo: local
+    hooks:
+      # Prevent committing test.py files within the tests folder
+    -   id: forbidden-testpy-files
+        name: forbidden testpy files
+        entry: found test.py file inside tests directory; rename or remove them
+        language: fail
+        files: "((./tests/.*/test.py)|(./tests/test.py))$"
+
+-   repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.22
+    hooks:
+    -   id: validate-pyproject
+
+-   repo: https://github.com/python-formate/flake8-dunder-all
+    rev: v0.4.1
+    hooks:
+    -   id: ensure-dunder-all
+        files: .*/__init__\.py$
+        exclude: tests/assets/
+
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: "v0.4.0" # Sync with pyproject.toml
+    hooks:
+    -   id: ruff
+        types_or: [python, pyi, jupyter]
+        args: ["--ignore", "FIX", --fix]
+    -   id: ruff-format
+        types_or: [python, pyi, jupyter]
+
+-   repo: https://github.com/lk16/detect-missing-init
+    rev: v0.1.6
+    hooks:
+    -   id: detect-missing-init
+        args: ["--create", "--python-folders", "src/faultless,tests"]
+
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    -   id: check-added-large-files
+        args: [--maxkb=100000]
+    -   id: trailing-whitespace
+        exclude: (.*\.sh|.*\.d2|.*\.md|.*\.drawio|.*egg-info.*|)$
+    -   id: check-merge-conflict
+        args: [--assume-in-merge]
+
+-   repo: local
+    hooks:
+    -   id: setuptools_scm
+        name: setuptools_scm
+        entry: python -m setuptools_scm -c
+        additional_dependencies: [setuptools_scm]
+        language: python
+        files: ^pyproject.toml$
+
+-   repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
+    hooks:
+    -   id: nbstripout
+        stages: [manual]
+        exclude: .*\.(example|template|keepoutput|)\.ipynb$
+
+-   repo: local
+    hooks:
+    -   id: deptry
+        name: deptry
+        entry: deptry .
+        additional_dependencies: [deptry==0.16.2]
+        language: python
+        always_run: true
+        pass_filenames: false
+
+-   repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.15.0
+    hooks:
+    -   id: markdownlint-cli2
+        args: ["--fix"]
+
+-   repo: https://github.com/radix-ai/auto-smart-commit
+    rev: v1.0.3
+    hooks:
+    -   id: auto-smart-commit

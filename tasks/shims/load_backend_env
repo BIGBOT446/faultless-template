@@ -1,0 +1,2 @@
+#!/bin/bash
+source ./tasks/scripts/load_backend_env.sh

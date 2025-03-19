@@ -1,0 +1,23 @@
+# Changes here will be overwritten by Copier
+_src_path: C:/Users/HALU/.ttpytemplatetemp/src/main
+backend: uv
+confluence_page_id: 1422196737
+is_advanced: true
+is_confluence_used: true
+is_doc_used: false
+is_jira_used: true
+is_projectwide_config_used: false
+is_rstyle_config_used: true
+is_sonarqube_used: true
+is_ttpy_namespace: false
+jira_project: CAPSTONE
+max_line_length: '100'
+name_slug: faultless
+project_name: 'Faultless: AI-Powered Proofreader for Engineering Reports'
+project_short_description: An AI-powered review engine for engineering reports used
+    in the development and maintenance of buildings, roads, bridges, and tunnels.
+    It acts as a virtual senior engineer by scanning and marking drafts for structural
+    clarity, compliance with standards, and overall accuracy, enabling quick revisions.
+py_version: 3.12.7
+sonarqube_proj_key: tonkintaylor_py-faultless-template_fc9da0e6-8d82-4eb7-bb9d-c81c6497408a
+tt_job_num: YYYTTNZ.0730
