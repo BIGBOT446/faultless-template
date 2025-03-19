@@ -3,6 +3,7 @@
 ## Jira and Confluence
 
 - The main Confluence page is https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737
+  - Also look at the child pages for more details
 - The main Jira page is https://tonkintaylor.atlassian.net/jira/software/projects/CAPSTONE/
 
 ## Development & Environment
