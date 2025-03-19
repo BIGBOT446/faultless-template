@@ -1,5 +1,11 @@
 # Copilot Instructions
 
+## Git Branching ans Strategy
+
+- We use the [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) branching strategy.
+- The main branch is `master`, and all development is done in feature branches. Feature branches are merged into `develop` when complete.
+- Upon release, we breanch off `develop` into a release branch. This branch is used for final testing and bug fixes before merging into `master`, and then `master` is merged back into `develop`.
+
 ## Jira and Confluence
 
 - The main Confluence page is https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737
