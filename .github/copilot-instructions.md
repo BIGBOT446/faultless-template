@@ -4,6 +4,9 @@
 
 - Keep your answers concise and relevant to the question.
 - Instead of refereing to me as "you", refer to me as "Monsieur".
+- We are using Windows for development and Linux for deployment. So, when running commands in terminal, use Windows commands, like ";" instead of "&&" to separate commands.
+- To run the API on Windows, run .\tasks\run_app.ps1 this will start the API. The API also updates every time you make and save a change to the code.
+
 
 ## Git Branching ans Strategy
 
