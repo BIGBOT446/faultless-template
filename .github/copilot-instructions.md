@@ -10,6 +10,9 @@
   - `git flow release finish <release_name>`
 - The production branch is `master`
 - The main branch is `develop`, and all development is done in feature branches. Feature branches are merged into `develop` when complete.
+- When creating a new feature branch, given a Jira task use the following naming convention:
+  - `feature/<task-id>-<feature_name>`
+
 
 ## Jira and Confluence
 
