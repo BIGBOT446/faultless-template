@@ -23,12 +23,7 @@
 
 - The main Confluence page is https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737
   - Also look at the child pages for more details
-- When adding comments to a Jira task:
-  - Use the MECE Principle.
-  - Utilize outline headers and bullet points when possible.
-  - Avoid adding next steps unless explicitly asked for.
-  - Keep comments concise and relevant to the task at hand.
-  - Only describe what has been done, not what will be done.
+- When adding comments to a Jira task format it in an easy way to read.
 
 ## Development & Environment
 - Use Windows for development and Linux for deployment. Ensure code is platform-agnostic.

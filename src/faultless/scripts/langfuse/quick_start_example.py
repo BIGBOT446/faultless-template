@@ -15,11 +15,14 @@ langfuse = Langfuse(
 )
 
 # Get production prompt
-prompt = langfuse.get_prompt("[Faultless][Language][Grammar and Spelling Check]")
+# prompt = langfuse.get_prompt("[Faultless][Language][Grammar and Spelling Check]") # noqa: ERA001
 
 # Get by label
 # You can use as many labels as you'd like to identify different deployment targets
 prompt = langfuse.get_prompt("[Faultless][Language][Grammar and Spelling Check]", label="latest")
 
-# Get by version number, usually not recommended as it requires code changes to deploy new prompt versions
-langfuse.get_prompt("[Faultless][Language][Grammar and Spelling Check]", version=2)
+text = """
+Public health leaders say the Goverment's insistence on vetting advise from senior public health doctors is unpresedented and deeply concerning.
+But Acting Prime Minister David Seymour has hit back at concerns, saying he's "cheering on Simeon [Brown] putting those mupets back in their box." In doing so, Seymour indicated the vetting directive had come directly from the health minister's offiice.
+During a meeting on Tuesday, medical officers of health were told they would need "national-level" aproval before making public statments about health concerns.
+"""
