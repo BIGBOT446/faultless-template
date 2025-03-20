@@ -19,10 +19,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 dynamic = ["version"]
 dependencies = [
+  "aiohttp",
   "pyyaml",
   "langfuse",
   "langchain==0.3.21",
   "langchain-google-vertexai==2.0.15",
+  "google-api-core[async_rest]"
 ]
 
 [project.optional-dependencies]
