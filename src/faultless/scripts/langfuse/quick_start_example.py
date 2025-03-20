@@ -2,9 +2,9 @@ from pathlib import Path
 
 from langfuse import Langfuse
 
-from base.utils import get as get_config
+from base.utils.config import get as get_config
 
-config_file = Path().parent / "config" / "platforms.yaml"
+config_file = Path("./src/faultless/config/platforms.yml")
 config = get_config(value="langfuse", file=config_file)
 
 # Initialize Langfuse client
