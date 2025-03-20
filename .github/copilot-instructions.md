@@ -1,5 +1,10 @@
 # Copilot Instructions
 
+## General Guidelines
+
+- Keep your answers concise and relevant to the question.
+- Instead of refereing to me as "you", refer to me as "Monsieur".
+
 ## Git Branching ans Strategy
 
 - We use the [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) branching strategy.
@@ -18,7 +23,12 @@
 
 - The main Confluence page is https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737
   - Also look at the child pages for more details
-- The main Jira page is https://tonkintaylor.atlassian.net/jira/software/projects/CAPSTONE/
+- When adding comments to a Jira task:
+  - Use the MECE Principle.
+  - Utilize outline headers and bullet points when possible.
+  - Avoid adding next steps unless explicitly asked for.
+  - Keep comments concise and relevant to the task at hand.
+  - Only describe what has been done, not what will be done.
 
 ## Development & Environment
 - Use Windows for development and Linux for deployment. Ensure code is platform-agnostic.

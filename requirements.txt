@@ -2,16 +2,29 @@
 #    uv pip compile --extra dev --extra check --extra test --extra doc --extra notebook --extra profile --extra viz --output-file=requirements.txt pyproject.toml
 annotated-types==0.7.0
     # via pydantic
+anyio==4.9.0
+    # via
+    #   httpx
+    #   langfuse
 asttokens==3.0.0
     # via stack-data
 attrs==25.3.0
     # via
     #   jsonschema
     #   referencing
+backoff==2.2.1
+    # via langfuse
 build==1.2.2.post1
     # via faultless (pyproject.toml)
+certifi==2025.1.31
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
 cfgv==3.4.0
     # via pre-commit
+charset-normalizer==3.4.1
+    # via requests
 click==8.1.8
     # via
     #   deptry
@@ -67,8 +80,20 @@ gitpython==3.1.44
     # via
     #   faultless (pyproject.toml)
     #   pre-commit-update
+h11==0.14.0
+    # via httpcore
+httpcore==1.0.7
+    # via httpx
+httpx==0.28.1
+    # via langfuse
 identify==2.6.9
     # via pre-commit
+idna==3.10
+    # via
+    #   anyio
+    #   httpx
+    #   langfuse
+    #   requests
 iniconfig==2.1.0
     # via pytest
 ipykernel==6.29.5
@@ -105,6 +130,8 @@ jupyterlab-widgets==3.0.13
     # via ipywidgets
 kiwisolver==1.4.8
     # via matplotlib
+langfuse==2.60.0
+    # via faultless (pyproject.toml)
 markdown-it-py==3.0.0
     # via rich
 markupsafe==3.0.2
@@ -142,6 +169,7 @@ packaging==24.2
     #   copier
     #   dunamai
     #   ipykernel
+    #   langfuse
     #   matplotlib
     #   pre-commit-update
     #   pytest
@@ -180,7 +208,9 @@ psutil==7.0.0
 pure-eval==0.2.3
     # via stack-data
 pydantic==2.10.6
-    # via copier
+    # via
+    #   copier
+    #   langfuse
 pydantic-core==2.27.2
     # via pydantic
 pygments==2.19.1
@@ -226,6 +256,8 @@ referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-specifications
+requests==2.32.3
+    # via langfuse
 rich==13.9.4
     # via perfplot
 rpds-py==0.23.1
@@ -246,6 +278,8 @@ six==1.17.0
     # via python-dateutil
 smmap==5.0.2
     # via gitdb
+sniffio==1.3.1
+    # via anyio
 stack-data==0.6.3
     # via ipython
 tomli==2.2.1
@@ -270,12 +304,17 @@ tuna==0.5.11
     # via faultless (pyproject.toml)
 typing-extensions==4.12.2
     # via
+    #   anyio
     #   pydantic
     #   pydantic-core
     #   referencing
+urllib3==2.3.0
+    # via requests
 virtualenv==20.29.3
     # via pre-commit
 wcwidth==0.2.13
     # via prompt-toolkit
 widgetsnbextension==4.0.13
     # via ipywidgets
+wrapt==1.17.2
+    # via langfuse
