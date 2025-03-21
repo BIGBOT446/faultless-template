@@ -11,6 +11,20 @@
 [![Jira](<https://img.shields.io/badge/tasks-jira-blue>)](<https://tonkintaylor.atlassian.net/browse/CAPSTONE>)
 <!-- badges: end -->
 
+## Subsystem Overview
+
+### ONLYOFFICE Docs
+
+### Langfuse
+
+The `quick_start_example.py` script demonstrates how to integrate ***Langfuse*** with ***LangChain*** to perform grammar and spelling checks using Google Gemini. To use this script, ensure the following environment variables are set in your `.env` file:
+
+- `LANGFUSE_SECRET_KEY`
+- `LANGFUSE_PUBLIC_KEY`
+- `GOOGLE_API_KEY`
+
+Additionally, while the default LLM configuration in `llm.yml` can be modified, we recommend keeping it unchanged during development as Google provides free API calls to a robust LLM model.
+
 ## Description
 
 ### Situation
@@ -96,10 +110,4 @@ Run the following command in Windows Powershell to release a new version of the 
 The branch will be automatically created and pushed to BitBucket, ready for a PR to be
 created.
 
-## Adding to changelog
 
-Add a new file at `doc/whatsnew/{issue_num}.{entry_type}.rst` where `{issue_num}` is
-the JIRA issue number being worked on, and `{entry_type}` is one of `feature`, `bugfix`,
-`doc`, `removal`, `newhome`, `test`, or `devconfig`.
-
-In the file provide a description of the change that will appear in the changelog.

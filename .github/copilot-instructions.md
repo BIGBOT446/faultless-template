@@ -1,5 +1,13 @@
 # Copilot Instructions
 
+## General Guidelines
+
+- Keep your answers concise and relevant to the question.
+- Instead of refereing to me as "you", refer to me as "Monsieur".
+- We are using Windows for development and Linux for deployment. So, when running commands in terminal, use Windows commands, like ";" instead of "&&" to separate commands.
+- To run the API on Windows, run .\tasks\run_app.ps1 this will start the API. The API also updates every time you make and save a change to the code.
+
+
 ## Git Branching ans Strategy
 
 - We use the [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) branching strategy.
@@ -10,12 +18,17 @@
   - `git flow release finish <release_name>`
 - The production branch is `master`
 - The main branch is `develop`, and all development is done in feature branches. Feature branches are merged into `develop` when complete.
+- When creating a new feature branch, given a Jira task use the following naming convention:
+  - `feature/<task-id>-<feature_name>`
+
 
 ## Jira and Confluence
 
 - The main Confluence page is https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737
   - Also look at the child pages for more details
-- The main Jira page is https://tonkintaylor.atlassian.net/jira/software/projects/CAPSTONE/
+- When adding comments to a Jira:
+  - Unless stated otherise, assume the jira ticket is the prefix of the branch name.
+  - Format it in an easy way to read.
 
 ## Development & Environment
 - Use Windows for development and Linux for deployment. Ensure code is platform-agnostic.

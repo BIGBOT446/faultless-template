@@ -20,6 +20,9 @@ requires-python = ">=3.12"
 dynamic = ["version"]
 dependencies = [
   "pyyaml",
+  "langfuse",
+  "langchain==0.3.21",
+  "langchain-google-genai==2.1.0",
 ]
 
 [project.optional-dependencies]
@@ -162,7 +165,7 @@ allowed-confusables = ["–", "σ", "ℹ"]
   "INP001", # Not actually a namespace package, a special Sphinx file
 ]
 # We aren't as strict about code quality in notebooks and scripts
-"src/{scripts,notebooks}/**" = [
+"src/**/{scripts,notebooks}/**" = [
   "ANN",    # Annotations
   "ARG001", # Unused function arguments
   "BLE001", # OK to catch blind exceptions
@@ -251,7 +254,7 @@ requirements_files_dev = ["requirements.txt", "requirements-dev.txt"]
 ignore = ["DEP002"]
 
 [tool.deptry.per_rule_ignores]
-DEP001 = ["faultless"]
+DEP001 = ["faultless", "base"]
 DEP003 = ["faultless"]
 
 [tool.deptry.package_module_name_map]
