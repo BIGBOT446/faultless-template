@@ -1,5 +1,5 @@
 default:
   langfuse:
-    secret_key: sk-lf-fc6651bc-0056-404e-b557-552f55eb1146
-    public_key: pk-lf-824c9854-b87e-4fca-b604-83b96a0bdf39
+    secret_key: $LANGFUSE_SECRET_KEY
+    public_key: $LANGFUSE_PUBLIC_KEY
     host: https://us.cloud.langfuse.com
