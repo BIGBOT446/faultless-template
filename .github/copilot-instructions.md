@@ -26,7 +26,9 @@
 
 - The main Confluence page is https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737
   - Also look at the child pages for more details
-- When adding comments to a Jira task format it in an easy way to read.
+- When adding comments to a Jira:
+  - Unless stated otherise, assume the jira ticket is the prefix of the branch name.
+  - Format it in an easy way to read.
 
 ## Development & Environment
 - Use Windows for development and Linux for deployment. Ensure code is platform-agnostic.
