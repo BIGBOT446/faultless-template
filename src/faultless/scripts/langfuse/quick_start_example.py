@@ -1,7 +1,12 @@
-"""Example script demonstrating LangChain integration with Google Gemini and Langfuse.
+"""How to Integrate Langfuse with LangChain Using Google Gemini
 
-This script performs a grammar and spelling check on a sample text using Google Gemini,
-with prompt management and tracing provided by Langfuse.
+This guide demonstrates how to integrate Langfuse with LangChain to perform a grammar and spelling
+check on a sample text using Google Gemini. Langfuse provides prompt management and tracing, while
+LangChain facilitates the interaction with the LLM.
+
+Disclaimer:
+Using LangChain is one way to utilize prompts from Langfuse. Depending on your use case, other
+solutions might be more suitable.
 """
 
 from pathlib import Path
@@ -13,37 +18,44 @@ from langfuse import Langfuse
 
 from base.utils.config import get as get_config
 
-# Get Langfuse config
+# Step 1: Load Configuration
+# Load Langfuse and LLM configurations from YAML files.
 config_file = Path("./src/faultless/config")
 langfuse_config = get_config(value="langfuse", file=config_file / "platforms.yml")
 llm_config = get_config(value="google", file=config_file / "llm.yml")
 
-# Initialize Langfuse client
+# Step 2: Initialize Langfuse Client
+# Create a Langfuse client using the configuration values.
 langfuse = Langfuse(
     secret_key=langfuse_config.get("secret_key"),
     public_key=langfuse_config.get("public_key"),
     host=langfuse_config.get("host"),
 )
 
-# Retrieve the grammar check prompt from Langfuse using its label
+# Step 3: Retrieve Prompt from Langfuse
+# Fetch the grammar check prompt from Langfuse using its label.
 langfuse_prompt = langfuse.get_prompt(
     name="[Faultless][Language][Grammar and Spelling Check]", label="production"
 )
 
-# Create a LangChain prompt template with "text" as input variable
+# Step 4: Create a LangChain Prompt Template
+# Use the Langfuse prompt to create a LangChain prompt template.
 langchain_prompt = PromptTemplate.from_template(
     template=langfuse_prompt.prompt,
     template_format="mustache",
     metadata={"langfuse_prompt": langfuse_prompt},
 )
 
-# Initialize the Gemini model with zero temperature for deterministic output
+# Step 5: Initialize the LLM
+# Set up the Google Gemini model with zero temperature for deterministic output.
 llm = GoogleGenerativeAI(model=llm_config.get("model"), google_api_key=llm_config.get("api_key"))
 
-# Create an LLMChain with the prompt and the Gemini model
+# Step 6: Create an LLMChain
+# Combine the LangChain prompt template and the LLM into an LLMChain.
 chain = LLMChain(llm=llm, prompt=langchain_prompt)
 
-# Sample text for grammar and spelling check
+# Step 7: Provide Input Text
+# Define the sample text for grammar and spelling check.
 text_to_check = (
     "Public health leaders say the Goverment's insistence on vetting advise from "
     "senior public health doctors is unpresedented and deeply concerning.\n"
@@ -54,7 +66,11 @@ text_to_check = (
     '"national-level" aproval before making public statments about health concerns.'
 )
 
-# Run the chain with the input text
+# Step 8: Run the Chain
+# Execute the chain with the input text and process the response.
 response = chain.invoke({"text": text_to_check})
 tidy_response = response.get("text").replace("```json", "").replace("```", "").strip()
+
+# Step 9: Output the Result
+# Print the cleaned-up response.
 print(tidy_response)
