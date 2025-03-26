@@ -2,5 +2,5 @@
   "config": {
     "default": true
   },
-  "ignores": [".github/copilot-instructions.md", "README.md"]
+  "ignores": [".github/copilot-instructions.md", "scratchpad.md", "README.md"]
 }
