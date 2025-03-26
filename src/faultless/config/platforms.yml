@@ -1,5 +1,8 @@
 default:
   langfuse:
+    host: https://us.cloud.langfuse.com
     secret_key: $LANGFUSE_SECRET_KEY
     public_key: $LANGFUSE_PUBLIC_KEY
-    host: https://us.cloud.langfuse.com
+  onlyoffice:
+    address: http://20.167.40.57
+    port: 9002

@@ -15,6 +15,9 @@
 
 ### ONLYOFFICE Docs
 
+- [ONLYOFFICE Docs API documentation](https://api.onlyoffice.com/docs/docs-api/get-started/basic-concepts/)
+- [Apache OpenOffice Developer's Guide](https://wiki.openoffice.org/wiki/Documentation/DevGuide)
+
 ### Langfuse
 
 The `quick_start_example.py` script demonstrates how to integrate ***Langfuse*** with ***LangChain*** to perform grammar and spelling checks using Google Gemini. To use this script, ensure the following environment variables are set in your `.env` file:
