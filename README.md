@@ -14,9 +14,8 @@
 ## Subsystem Overview
 
 ### ONLYOFFICE Docs
-
-- [ONLYOFFICE Docs API documentation](https://api.onlyoffice.com/docs/docs-api/get-started/basic-concepts/)
-- [Apache OpenOffice Developer's Guide](https://wiki.openoffice.org/wiki/Documentation/DevGuide)
+- [ONLYOFFICE Docs API documentation](https://api.onlyoffice.com/docs/docs-api/additional-api/document-builder-api/)
+- [Examples on how to integrate ONLYOFFICE into your Python application](https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/python)
 
 ### Langfuse
 

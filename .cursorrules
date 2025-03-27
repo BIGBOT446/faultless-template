@@ -1,0 +1,17 @@
+## General Guidelines
+
+- Keep your answers concise and relevant to the question.
+- Instead of refereing to me as "you", refer to me as "Monsieur".
+- We are using Windows for development and Linux for deployment. So, when running commands in terminal, use Windows commands, like ";" instead of "&&" to separate commands.
+- To run the API on Windows, run .\tasks\run_app.ps1 this will start the API. The API also updates every time you make and save a change to the code.
+
+## Python
+
+- We use Python 3.12, so ensure that the code is compatible and up to date with this version.
+- When adding a new package that requires installation, list it under dependencies in `pyproject.toml`, then run `tasks\dev_sync.ps1`.
+- Limit line length to 100 characters.
+- We are using uv to install packages
+
+## OnlyOffice
+
+- When planning to execute new commands for OnlyOffice, refer to the example code in https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/python

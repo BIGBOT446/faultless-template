@@ -68,6 +68,7 @@
 13. Only use "logging" (import logging) in endpoints.
 14. When adding a new package that requires installation, list it under dependencies in `pyproject.toml`, then run `tasks\dev_sync.ps1`.
 15. When working with DataFrames, use Pandas methods like `assign` and `query` for efficiency.
+16. We use Python 3.12, so ensure that the code is compatible with this version.
 
 ## Endpoint Development
 1. Use FastAPI.
@@ -81,3 +82,7 @@
     - [X] Task 1
     - [ ] Task 2
   - Update task progress, especially after milestones.
+
+## OnlyOffice
+
+- When planning to execute new commands for OnlyOffice, refer to the example code in https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/python
