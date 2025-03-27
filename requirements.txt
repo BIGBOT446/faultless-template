@@ -330,6 +330,7 @@ referencing==0.36.2
     #   jsonschema-specifications
 requests==2.32.3
     # via
+    #   faultless (pyproject.toml)
     #   google-api-core
     #   langchain
     #   langfuse

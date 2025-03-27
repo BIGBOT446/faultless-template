@@ -18,9 +18,6 @@
   - `git flow release finish <release_name>`
 - The production branch is `master`
 - The main branch is `develop`, and all development is done in feature branches. Feature branches are merged into `develop` when complete.
-- When creating a new feature branch, given a Jira task use the following naming convention:
-  - `feature/<task-id>-<feature_name>`
-
 
 ## Jira and Confluence
 
@@ -28,7 +25,13 @@
   - Also look at the child pages for more details
 - When adding comments to a Jira:
   - Unless stated otherise, assume the jira ticket is the prefix of the branch name.
+  - Use scratchpad.md to retireve what has been done so far, and what needs to be done for the jira task.
   - Format it in an easy way to read.
+- When asked to fix / implement a feature given Jira ticket ID:
+  - Create a new branch using the ticket ID as the prefix of the branch name.
+  - Use the following format: `feature/<ticket-id>-<feature_name>`
+  - Create a plan for the feature and update scratchpad.md
+  - Wheboth in the Jira ticket.
 
 ## Development & Environment
 - Use Windows for development and Linux for deployment. Ensure code is platform-agnostic.
@@ -65,6 +68,7 @@
 13. Only use "logging" (import logging) in endpoints.
 14. When adding a new package that requires installation, list it under dependencies in `pyproject.toml`, then run `tasks\dev_sync.ps1`.
 15. When working with DataFrames, use Pandas methods like `assign` and `query` for efficiency.
+16. We use Python 3.12, so ensure that the code is compatible with this version.
 
 ## Endpoint Development
 1. Use FastAPI.
@@ -78,3 +82,7 @@
     - [X] Task 1
     - [ ] Task 2
   - Update task progress, especially after milestones.
+
+## OnlyOffice
+
+- When planning to execute new commands for OnlyOffice, refer to the example code in https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/python
