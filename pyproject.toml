@@ -23,7 +23,8 @@ dependencies = [
   "langfuse",
   "langchain==0.3.21",
   "langchain-google-genai==2.1.0",
-  "requests"
+  "requests"，
+  "pandas"
 ]
 
 [project.optional-dependencies]
