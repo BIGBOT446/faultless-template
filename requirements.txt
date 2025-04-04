@@ -207,6 +207,7 @@ numpy==2.2.4
     #   contourpy
     #   matplotlib
     #   matplotx
+    #   pandas
     #   perfplot
 orjson==3.10.15
     # via langsmith
@@ -223,6 +224,8 @@ packaging==24.2
     #   pre-commit-update
     #   pytest
     #   setuptools-scm
+pandas==2.2.3
+    # via faultless (pyproject.toml)
 parso==0.8.4
     # via jedi
 pathspec==0.12.1
@@ -306,6 +309,9 @@ python-dateutil==2.9.0.post0
     # via
     #   jupyter-client
     #   matplotlib
+    #   pandas
+pytz==2025.2
+    # via pandas
 pywin32==310
     # via
     #   jupyter-core
@@ -396,6 +402,8 @@ typing-extensions==4.12.2
     #   pydantic-core
     #   referencing
     #   sqlalchemy
+tzdata==2025.2
+    # via pandas
 urllib3==2.3.0
     # via requests
 virtualenv==20.29.3

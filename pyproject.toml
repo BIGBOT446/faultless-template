@@ -24,7 +24,9 @@ dependencies = [
   "langchain==0.3.21",
   "langchain-google-genai==2.1.0",
   "requests",
-  "pandas"
+  "pandas",
+  "django",
+  "langchain_core",
 ]
 
 [project.optional-dependencies]

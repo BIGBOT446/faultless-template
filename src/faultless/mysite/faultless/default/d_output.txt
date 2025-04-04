@@ -1,0 +1,3 @@
+return in a json object with following structure:
+	'matches': ['message': 'error description', 'original': 'original word or phrase', 'corrected': 'the word or phrase after correction', ...],
+	'output': 'the modified report'

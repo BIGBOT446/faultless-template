@@ -1,0 +1,67 @@
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Set Rule</title>
+
+    <style>
+        html,
+        body {
+        height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content:center;
+            align-items: center;
+        }
+
+        .inputbox{
+            display: block;
+            box-sizing: border-box;
+            border-width: 7px;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .inputbox #name{
+            width: 300px;
+            height: auto;
+        }
+
+        .inputbox::placeholder{
+            text-align: left;
+        }
+
+
+    </style>
+
+
+
+</head>
+
+<body>
+    <h2>Selected File: {{ file_name }}</h2>
+
+    <form action = "" method = "post">    
+        {% csrf_token %}
+        {% render_field form.name %}
+        {% render_field form.scale %}
+        {% render_field form.description %}
+        <input type="submit" name="submit" value="Submit">
+    </form>
+    <form method="get" action="{% url 'view_rules' %}">
+        {% csrf_token %}
+        <input type="hidden" name="file_name" value="{{ file_name }}">
+        <button type="submit" class="select-btn">Next</button>
+    </form>
+
+
+
+
+</body>
+
+</html>
