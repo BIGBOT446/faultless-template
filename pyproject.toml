@@ -27,6 +27,7 @@ dependencies = [
   "pandas",
   "django",
   "langchain_core",
+  "python-docx",
 ]
 
 [project.optional-dependencies]

@@ -36,7 +36,15 @@ def get_rule(request):
 def view_details(request):
     data = rules.objects.all().values()
     documents = Document.objects.all().order_by("-uploaded_at")
-    report = documents[0].path
+    report = None
+
+    context = {
+        "allrules": data,
+        "document": documents,
+    }
+
+    if len(documents) > 0:
+        report = documents[0].path
     if request.method == "GET":
         if "select_file" in request.GET:
             file_name = request.GET.get("select_file", "")
@@ -47,12 +55,11 @@ def view_details(request):
             document.delete()
             return redirect(view_details)
         if "review_report" in request.POST:
-            return redirect(get_response(report))
-    context = {
-        "allrules": data,
-        "document": documents,
-        #'selected': report,
-    }
+            if report == None:
+                context["message"] = 'Please submit a report for review!'
+                return render(request, "faultless/details.html", context)
+            return get_response(request, report)
+        
     return render(request, "faultless/details.html", context)
 
 
@@ -63,9 +70,8 @@ def get_response(request, report):
         output += str(i + 1) + ". Name: " + data[i]["name"] + "\n"
         output += "Scale: " + str(data[i]["scale"]) + "\n"
         output += "Description: " + data[i]["description"] + "\n"
-    template = loader.get_template("faultless/output.html")
     trace = send_prompt(output, report)
     context = {
         "modified": trace,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, "faultless/output.html", context)
