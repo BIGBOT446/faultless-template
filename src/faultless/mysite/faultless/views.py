@@ -21,15 +21,13 @@ def file_manager(request):
 
 
 def get_rule(request):
-    file_name = request.GET.get("file_name", "")
-
     if request.method == "POST":
         form = RuleForm(request.POST)
         form.save()
         return redirect("get_rule")
     else:
         form = RuleForm()
-    context = {"form": form, "file_name": file_name}
+    context = {"form": form}
     return render(request, "faultless/rule.html", context)
 
 
@@ -64,14 +62,20 @@ def view_details(request):
 
 
 def get_response(request, report):
-    data = rules.objects.all().values()
-    output = ""
-    for i in range(len(data)):
-        output += str(i + 1) + ". Name: " + data[i]["name"] + "\n"
-        output += "Scale: " + str(data[i]["scale"]) + "\n"
-        output += "Description: " + data[i]["description"] + "\n"
-    trace = send_prompt(output, report)
+    if request.method == "POST":
+        data = rules.objects.all().values()
+        output = ""
+        for i in range(len(data)):
+            output += str(i + 1) + ". Name: " + data[i]["name"] + "\n"
+            output += "Scale: " + str(data[i]["scale"]) + "\n"
+            output += "Description: " + data[i]["description"] + "\n"
+        trace = send_prompt(output, report)
+        context = {
+            "modified": trace,
+        }
+        return render(request, "faultless/output.html", context)
     context = {
-        "modified": trace,
+        "message": "There is no review history yet.",
     }
+
     return render(request, "faultless/output.html", context)

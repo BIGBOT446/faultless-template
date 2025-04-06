@@ -4,18 +4,45 @@
   <title>Details</title>
 
   <style>
-    .file-list {
-      margin-top: 20px;
-      border-top: 1px solid #ccc;
-      padding-top: 20px;
+    .side_bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 220px;
+        background-color: #f0f4f8;
+        display: flex;
+        flex-direction: column;
+        padding-top: 60px;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
     }
 
-    .file-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
+    .side_bar a {
+        text-decoration: none;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .side_bar button {
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        padding: 15px 20px;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        width: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .side_bar button:hover {
+        background-color: #1976D2;
+        transform: scale(1.02);
     }
 
     .delete-btn {
@@ -35,78 +62,189 @@
       border-radius: 3px;
       cursor: pointer;
     }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 40px;
+    }
+
+    h2 {
+        color: #333;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    ul.upload-list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 40px;
+    }
+
+    ul.upload-list li {
+        background-color: #fff;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .upload-buttons button {
+        background-color: #f44336;
+        border: none;
+        color: white;
+        padding: 8px 14px;
+        margin-left: 5px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .upload-buttons button:hover {
+        background-color: #d32f2f;
+    }
+
+    table.rule-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .rule-table th, .rule-table td {
+        padding: 16px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        vertical-align: top;
+    }
+
+    .rule-table th {
+        background-color: #f0f0f0;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .rule-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    button.review-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        background-color: #2196F3;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button.review-btn:hover {
+        background-color: #1976D2;
+    }
   </style>
 </head>
 
 <body>
 
-<div class="file_list">
+  <div class="side_bar">
+    <a href="{% url 'file_manager' %}">
+      <button type="submit">UPLOAD FILE</button>
+    </a>
+    <a href="{% url 'get_rule' %}">
+      <button type="submit">ADD RULE</button>
+    </a>
+    <a href="{% url 'view_details' %}">
+      <button type="submit">VIEW DETAILS</button>
+    </a>
+  </div>
+
+<div style="margin-left: 240px; padding: 40px;">
   <h2>Uploaded Files</h2>
-  {% if document %}
-    {% for d in document %}
-    <div class="file-item">
-      <span>{{ d.file.name }} - {{ d.uploaded_at }}</span>
+  <ul class="upload-list">
+    {% if document %}
+      {% for d in document %}
+      <li>
+        <div>
+          <strong>{{ d.file.name }}</strong><br>
+          <small>{{ d.uploaded_at }}</small>
+        </div>
+        <div class="upload-buttons">
+          <form method="get" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="select_file" value="{{ d.file.name }}">
+            <button type="submit" class="select-btn">Select</button>
+          </form>
 
-      <div style="display: flex; gap: 10px;">
-        <form method="get">
-          {% csrf_token %}
-          <input type="hidden" name="select_file" value="{{ d.file.name }}">
-          <button type="submit" class="select-btn">Select</button>
-        </form>
+          <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="delete_id" value="{{ d.id }}">
+            <button type="submit" class="delete-btn">Delete</button>
+          </form>
+        </div>
+      </li>
+      {% endfor %}
+    {% else %}
+      <li>No files uploaded yet</li>
+    {% endif %}
+  </ul>
 
-        <form method="post"  style="display: inline;">
-          {% csrf_token %}
-          <input type="hidden" name="delete_id" value="{{ d.id}}">
-          <button type="submit" class="delete-btn">Delete</button>
-        </form>
-      </div>
-    </div>
-    {% endfor %}
-  {% else %}
-    <p>No files uploaded yet</p>
-  {% endif %}
-</ul>
-</div>
 <br>
 <br>
 
-<table border='1'>
-  <tr>
-    <th>Name</th>
-    <th>Scale</th>
-    <th>Description</th>
-  </tr>
-  {% for x in allrules %}
-    <tr>
-      <td>{{ x.name }}</td>
-      <td>{{ x.scale }}</td>
-      <td>{{ x.description }}</td>
-    </tr>
-  {% endfor %}
-</table>
+  <h2>Rules</h2>
+  <table class="rule-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Scale</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for x in allrules %}
+      <tr>
+        <td>{{ x.name }}</td>
+        <td>{{ x.scale }}</td>
+        <td>{{ x.description }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-<form method="POST" style="display: inline;">
+  <form method="POST">
     {% csrf_token %}
-    <button type="submit" onclick="showPopup()" name="review_report">Review</button>
-</form>
+    <button type="submit" onclick="showPopup()" name="review_report" class="review-btn">Review</button>
+  </form>
+</div>
 
-<script>
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-      if (!confirm('Are you sure you want to delete this file?')) {
-        e.preventDefault();
-      }
+  <script>
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function (e) {
+        if (!confirm('Are you sure you want to delete this file?')) {
+          e.preventDefault();
+        }
+      });
     });
-  });
-</script>
+  </script>
 
-{% if message %}
-<script>
-  window.onload = function showPopup() {
-    const message = "{{ message }}";
-    alert(message);
-  }
-</script>
-{% endif %}
+  {% if message %}
+  <script>
+    window.onload = function showPopup() {
+      const message = "{{ message }}";
+      alert(message);
+    }
+  </script>
+  {% endif %}
+
 </body>
 </html>  

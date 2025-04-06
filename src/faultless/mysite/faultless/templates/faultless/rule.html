@@ -7,36 +7,122 @@
     <title>Set Rule</title>
 
     <style>
-        html,
-        body {
-        height: 100%;
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
         }
 
-        body {
+        .side_bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 220px;
+            background-color: #f0f4f8;
             display: flex;
             flex-direction: column;
-            justify-content:center;
+            padding-top: 60px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .side_bar a {
+            text-decoration: none;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .side_bar button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .side_bar button:hover {
+            background-color: #1976D2;
+            transform: scale(1.02);
+        }
+
+        .form-wrapper {
+            margin-left: 220px; /* offset for sidebar */
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            min-height: 100vh;
+            gap: 30px;
         }
 
-        .inputbox{
-            display: block;
+        .form-wrapper h2 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 400px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
             box-sizing: border-box;
-            border-width: 7px;
-            margin-top: 5px;
-            text-align: left;
+            font-family: inherit;
         }
 
-        .inputbox #name{
-            width: 300px;
-            height: auto;
+        input[type="submit"],
+        button.select-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            align-self: center;
         }
 
-        .inputbox::placeholder{
-            text-align: left;
+        input[type="submit"]:hover,
+        button.select-btn:hover {
+            background-color: #1976D2;
+            transform: scale(1.02);
         }
 
+        .name {
+            height: 50px;
+        }
 
+        .scale {
+            height: 20px;
+        }
     </style>
 
 
@@ -44,20 +130,29 @@
 </head>
 
 <body>
-    <h2>Selected File: {{ file_name }}</h2>
 
-    <form action = "" method = "post">    
-        {% csrf_token %}
-        {% render_field form.name %}
-        {% render_field form.scale %}
-        {% render_field form.description %}
-        <input type="submit" name="submit" value="Submit">
-    </form>
-    <form method="get" action="{% url 'view_rules' %}">
-        {% csrf_token %}
-        <input type="hidden" name="file_name" value="{{ file_name }}">
-        <button type="submit" class="select-btn">Next</button>
-    </form>
+    <div class="side_bar">
+        <a href="{% url 'file_manager' %}">
+            <button type="submit">UPLOAD FILE</button>
+        </a>
+        <a href="{% url 'get_rule' %}">
+            <button type="submit">ADD RULE</button>
+        </a>
+        <a href="{% url 'view_details' %}">
+            <button type="submit">VIEW DETAILS</button>
+        </a>
+    </div>
+
+
+    <div class="form-wrapper">
+        <form method="post">
+            {% csrf_token %}
+            {% render_field form.name %}
+            {% render_field form.scale %}
+            {% render_field form.description %}
+            <input type="submit" name="submit" value="Submit">
+        </form>
+    </div>
 
 
 

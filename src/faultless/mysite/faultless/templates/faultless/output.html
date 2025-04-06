@@ -3,7 +3,14 @@
 <body>
 
 <p>The queryset object:</p>
+
+{% if message %}
+{{ message }}
+{% endif %}
+
+{% if modified %}
 {{ modified }}
+{% endif %}
 
 </body>
 </html>  

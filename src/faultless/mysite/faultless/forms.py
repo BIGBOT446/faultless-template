@@ -17,14 +17,14 @@ class RuleForm(forms.ModelForm):
             ),
             "name": forms.Textarea(
                 attrs={
-                    "class": "inputbox",
+                    "class": "name",
                     "id": "name",
                     "placeholder": "Name",
                 }
             ),
             "scale": forms.NumberInput(
                 attrs={
-                    "class": "inputbox",
+                    "class": "scale",
                     "id": "scale",
                     "placeholder": "Scale",
                     "max": "5",
