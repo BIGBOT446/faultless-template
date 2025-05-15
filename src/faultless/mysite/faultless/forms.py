@@ -1,11 +1,11 @@
 from django import forms
 
-from .models import Document, rules
+from .models import Document, Rules
 
 
 class RuleForm(forms.ModelForm):
     class Meta:
-        model = rules
+        model = Rules
         fields = ["name", "scale", "description"]
         widgets = {
             "description": forms.Textarea(

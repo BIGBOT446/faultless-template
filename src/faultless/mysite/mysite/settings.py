@@ -127,3 +127,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = " /meida/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # here, MEDIA_ROOT = 'path-to-project/media/'
+
+# Default cache location
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  # good for development
+        'LOCATION': 'unique-faultless',
+    }
+}

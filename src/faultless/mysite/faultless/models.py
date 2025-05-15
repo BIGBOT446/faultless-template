@@ -4,7 +4,7 @@ from django.db import models
 
 
 # Create your models here.
-class rules(models.Model):
+class Rules(models.Model):
     name = models.CharField(max_length=30)
     scale = models.IntegerField()
     description = models.TextField()
@@ -36,4 +36,7 @@ class Document(models.Model):
     def __str__(self):
         return self.file.name
 
+class Trace(models.Model):
+    path = models.CharField(max_length=255)
+    review_output = models.JSONField()
 

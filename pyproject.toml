@@ -28,6 +28,8 @@ dependencies = [
   "django",
   "langchain_core",
   "python-docx",
+  "spire",
+  "spire.doc",
 ]
 
 [project.optional-dependencies]

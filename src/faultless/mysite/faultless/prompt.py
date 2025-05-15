@@ -27,15 +27,20 @@ def send_prompt(new_rules, report):
     )"""
 
     langfuse = Langfuse()
-    def create_prompt(new_rules):
+    def create_prompt(new_rule):
         langfuse.create_prompt(
-            name="report_check",
-            prompt="You are designed to review a report {{report}}, below there are some rules that help you to check the report(ignore the scale now)\n"
-            + new_rules
+            name=new_rule["name"],
+            prompt="You are a proofreader, designed to review an engineering report(it might contains sepcial words in engineering area so please be careful when you review) and find all the errors in it, please use the original report to find all the errors before you modify it. below there are some rules that help you to check the report\n"
+            + new_rule["description"]
             + "\n"
             "return in a json object with following structure:"
-            "'matches': [ 'message': 'error description', 'original': 'original word or phrase', 'corrected': 'the word or phrase after correction', ...],"
-            "'output': 'the modified report'",
+            "'matches': ['error_type': 'error name(only use the name i gave you)', 'message': 'simple description of the error and how to correct it', 'section': 'the place in the text to comment', ...],"
+            + "\n"
+            + "\n"
+            "Report: " 
+            + "\n"
+            + "\n"
+            "{{report}}",
             config={
                 "model": "gemini-2.0-flash",
                 "temperature": 0,
@@ -48,8 +53,25 @@ def send_prompt(new_rules, report):
     langfuse_callback_handler = CallbackHandler()
 
     # Get production prompt
-    create_prompt(new_rules)
-    langfuse_prompt = langfuse.get_prompt("report_check")
+    for new_rule in new_rules:
+        if new_rule["name"] == "Grammar and Spelling Check":
+            langfuse.create_prompt(
+            name = new_rule["name"],
+            prompt = new_rule["description"],
+            config={
+                "model": "gemini-2.0-flash",
+                "temperature": 0,
+            },
+            labels=["production"],
+        )
+        create_prompt(new_rule)
+
+    # Get report from the doc
+    body = Document(report)
+    text = "\n".join([para.text for para in body.paragraphs])
+
+    return text
+    """langfuse_prompt = langfuse.get_prompt("report_check")
 
     langchain_prompt = ChatPromptTemplate.from_template(
         langfuse_prompt.get_langchain_prompt(),
@@ -61,15 +83,12 @@ def send_prompt(new_rules, report):
     temperature = str(langfuse_prompt.config["temperature"])
     model = ChatGoogleGenerativeAI(model=model, temperature=temperature)
     chain = langchain_prompt | model
-
-    # Get report from the doc
-    report = Document(report)
-    text = "\n".join([para.text for para in report.paragraphs])
     
-
     example_input = {
         "report": text
     }
     response = chain.invoke(input=example_input, config={"callbacks": [langfuse_callback_handler]})
 
-    return response.content
+    new_trace = Trace(path=report, review_output = response.content[7:-3])
+    new_trace.save()"""
+
