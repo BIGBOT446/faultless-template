@@ -6,6 +6,8 @@ anyio==4.9.0
     # via
     #   httpx
     #   langfuse
+asgiref==3.8.1
+    # via django
 asttokens==3.0.0
     # via stack-data
 attrs==25.3.0
@@ -55,6 +57,8 @@ deptry==0.16.2
     # via faultless (pyproject.toml)
 distlib==0.3.9
     # via virtualenv
+django==5.2.1
+    # via faultless (pyproject.toml)
 dunamai==1.23.0
     # via copier
 execnet==2.1.1
@@ -157,6 +161,7 @@ langchain==0.3.21
     # via faultless (pyproject.toml)
 langchain-core==0.3.47
     # via
+    #   faultless (pyproject.toml)
     #   langchain
     #   langchain-google-genai
     #   langchain-text-splitters
@@ -170,6 +175,8 @@ langsmith==0.3.18
     # via
     #   langchain
     #   langchain-core
+lxml==5.4.0
+    # via python-docx
 markdown-it-py==3.0.0
     # via rich
 markupsafe==3.0.2
@@ -238,6 +245,8 @@ platformdirs==4.3.7
     #   virtualenv
 pluggy==1.5.0
     # via pytest
+plum-dispatch==1.7.4
+    # via spire-doc
 plumbum==1.9.0
     # via copier
 pre-commit==4.2.0
@@ -307,6 +316,8 @@ python-dateutil==2.9.0.post0
     #   jupyter-client
     #   matplotlib
     #   pandas
+python-docx==1.1.2
+    # via faultless (pyproject.toml)
 pytz==2025.2
     # via pandas
 pyyaml==6.0.2
@@ -361,8 +372,14 @@ smmap==5.0.2
     # via gitdb
 sniffio==1.3.1
     # via anyio
+spire==0.4.2
+    # via faultless (pyproject.toml)
+spire-doc==13.3.7
+    # via faultless (pyproject.toml)
 sqlalchemy==2.0.39
     # via langchain
+sqlparse==0.5.3
+    # via django
 stack-data==0.6.3
     # via ipython
 tenacity==9.0.0
@@ -393,6 +410,7 @@ typing-extensions==4.12.2
     #   langchain-core
     #   pydantic
     #   pydantic-core
+    #   python-docx
     #   referencing
     #   sqlalchemy
 tzdata==2025.2
