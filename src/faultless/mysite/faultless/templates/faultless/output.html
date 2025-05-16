@@ -1,8 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Proofreading Report</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
 
+        h1 { margin-bottom: 1rem; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+
+        th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+
+        th { background-color: #f5f5f5; }
+
+        .error-spelling { background-color: #ffecec; }
+
+        .error-units { background-color: #e7f4ff; }
+
+        .filter-buttons button {
+            margin-right: 10px;
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: #ddd;
+            cursor: pointer;
+        }
+
+        .filter-buttons button.active {
+            background-color: #333;
+            color: white;
+        }
+
+        .fix { font-weight: bold; color: green; }
+
+        .code-box { font-family: monospace; background-color: #f0f0f0; padding: 2px 5px; border-radius: 3px; }
+
+        .btn-download {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn-download:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function filterErrors(type) {
+            const rows = document.querySelectorAll("tbody tr");
+            const buttons = document.querySelectorAll(".filter-buttons button");
+            buttons.forEach(b => b.classList.remove("active"));
+            document.getElementById("btn-" + type).classList.add("active");
+
+            rows.forEach(row => {
+                if (type === "all") {
+                    row.style.display = "";
+                } else {
+                    row.style.display = row.classList.contains(type) ? "" : "none";
+                }
+            });
+        }
+    </script>
+</head>
 <body>
-<a href="{{ path }}" download>Download Document</a>
+    <h1>🧾 Document Proofreading Report</h1>
 
+    <div style="margin-top: 1rem; margin-bottom: 1rem;">
+        <a href="{{ url }}" class="btn-download">⬇️ Download File</a>
+    </div>
+
+    <div class="filter-buttons">
+        <button id="btn-all" class="active" onclick="filterErrors('all')">All</button>
+        <button id="btn-error-spelling" onclick="filterErrors('error-spelling')">🔠 Spelling Errors</button>
+        <button id="btn-error-units" onclick="filterErrors('error-units')">📏 Unit Issues</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Error Type</th>
+                <th>Original</th>
+                <th>Suggestion</th>
+                <th>Message</th>
+                <th>Section</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for match in matches %}
+            <tr class="{% if match.error_type == 'Spelling Error' %}error-spelling{% else %}error-units{% endif %}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ match.error_type }}</td>
+                <td><span class="code-box">{{ match.original|default:"—" }}</span></td>
+                <td>
+                    {% if match.replacements %}
+                        <span class="fix">{{ match.replacements.0 }}</span>
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>{{ match.message }}</td>
+                <td>
+                    {% if match.section %}
+                        {{ match.section }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
-</html>  
+</html>

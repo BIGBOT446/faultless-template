@@ -11,6 +11,7 @@ from . import sort
 from faultless.marker.llm import ai_output
 from faultless.marker.scripts.spire.grammar_spelling import grammar_spelling
 from faultless.marker.scripts.spire.rules import rules 
+from faultless.marker.scripts.spire.summary import insert_text_new_page 
 from pathlib import Path
 
 
@@ -60,11 +61,18 @@ def view_details(request):
             file_name = request.GET.get("select_file", "")
             report = get_object_or_404(Document, file=file_name).path
             cache.set('selected', report, timeout=600)
+            
     if request.method == "POST":
         if "delete_id" in request.POST:
             document = get_object_or_404(Document, pk=request.POST["delete_id"])
             document.delete()
             return redirect(view_details)
+        
+        if "delete_rule_id" in request.POST:
+            rule = get_object_or_404(Rules, pk=request.POST["delete_rule_id"])
+            rule.delete()
+            return redirect(view_details)
+ 
         if "view_details" in request.POST:
             if cache.get('selected') == None:
                 context["message"] = 'Please submit a report for review!'
@@ -98,12 +106,16 @@ def get_response(request):
                 grammar_spelling(output, report)
             else:
                 rules(output, report)
+        insert_text_new_page(report, ai_output("Summary", text))
+
         # get trace that stored in the database
         trace = Trace.objects.get(path=report)
         relative_path = os.path.relpath(output_file, settings.MEDIA_ROOT)
         file_url = settings.MEDIA_URL + relative_path.replace(os.sep, '/')
+        trace = trace.review_output
         context = {
-            "path": file_url,
+            "matches": trace["matches"],
+            "url": file_url,
         }
         return render(request, "faultless/output.html", context)
     context = {

@@ -88,22 +88,24 @@ def ai_output(promptname, text_to_give):
     # Execute the chain with the input text and process the response.
     response = chain.invoke({"report": text_to_give})
     tidy_response = response.get("text").replace("```json", "").replace("```", "").strip()
-    a = json.loads(tidy_response)
-    report = cache.get("selected")
-    if Trace.objects.filter(path=report).exists():
-        trace = Trace.objects.get(path=report)
-        
-        for data in a["matches"]:
-            trace.review_output["matches"].append(data)
-        trace.save()
-    else:
-        new_trace = Trace(path=report, review_output = a)
-        new_trace.save()
-
     try:
-     return json.loads(tidy_response)
-    except Exception as e:
-     return str(tidy_response)
+        a = json.loads(tidy_response)
+        report = cache.get("selected")
+        if Trace.objects.filter(path=report).exists():
+            trace = Trace.objects.get(path=report)
+            
+            for data in a["matches"]:
+                trace.review_output["matches"].append(data)
+            trace.save()
+        else:
+            new_trace = Trace(path=report, review_output = a)
+            new_trace.save()
+    except:
+        a = str(tidy_response)
+    
+    return a
+
+
 
 
 """file_path = upload_docx()

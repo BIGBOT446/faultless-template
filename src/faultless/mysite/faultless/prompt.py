@@ -31,6 +31,9 @@ def send_prompt(new_rules, report):
         langfuse.create_prompt(
             name=new_rule["name"],
             prompt="You are a proofreader, designed to review an engineering report(it might contains sepcial words in engineering area so please be careful when you review) and find all the errors in it, please use the original report to find all the errors before you modify it. below there are some rules that help you to check the report\n"
+            + "\n"
+            + "error name: " + new_rule["name"]
+            + "\n"
             + new_rule["description"]
             + "\n"
             "return in a json object with following structure:"
