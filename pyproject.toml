@@ -30,7 +30,7 @@ dependencies = [
   "python-docx",
   "spire",
   "spire.doc",
-  "widget_tweaks",
+  "django-widget-tweaks",
 ]
 
 [project.optional-dependencies]
