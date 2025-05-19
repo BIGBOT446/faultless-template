@@ -102,11 +102,7 @@ def get_response(request):
 
         for rule in rule_list:
             output = ai_output(rule["name"], text)
-            if rule["name"] == "Grammar and Spelling Check":
-                grammar_spelling(output, report)
-            else:
-                rules(output, report)
-        insert_text_new_page(report, ai_output("Summary", text))
+            rules(output, report)
 
         # get trace that stored in the database
         trace = Trace.objects.get(path=report)

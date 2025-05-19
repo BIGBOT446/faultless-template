@@ -12,9 +12,10 @@ from pathlib import Path
 import importlib.resources
 
 from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
-from langchain_google_genai import GoogleGenerativeAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langfuse import Langfuse
+from langfuse.callback import CallbackHandler
 from django.core.cache import cache
 
 import json
@@ -47,6 +48,7 @@ def ai_output(promptname, text_to_give):
     )'''
     os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-03837ecb-bae5-4aa2-a319-1afb959284f5"
     os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-b860425a-38b3-4c13-a85c-5b1c0c38605a"
+    os.environ["GOOGLE_API_KEY"] = "AIzaSyBBYnENqtXiXais7x7t9LANWGEcOQLzA4Q"
 
     try:
         langfuse = Langfuse()
@@ -67,27 +69,37 @@ def ai_output(promptname, text_to_give):
 
     # Step 4: Create a LangChain Prompt Template
     # Use the Langfuse prompt to create a LangChain prompt template.
-    langchain_prompt = PromptTemplate.from_template(
-        template=langfuse_prompt.prompt,
-        template_format="mustache",
+    langchain_prompt = ChatPromptTemplate.from_template(
+        langfuse_prompt.get_langchain_prompt(),
         metadata={"langfuse_prompt": langfuse_prompt},
     )
 
 
+
     # Step 5: Initialize the LLM
     # Set up the Google Gemini model with zero temperature for deterministic output.
-    llm = GoogleGenerativeAI(model="gemini-2.0-flash", google_api_key="AIzaSyCBSjoQWBDT4vxdaqEky04NizOK7LSkPWg")
+    model = langfuse_prompt.config["model"]
+
+    temperature = str(langfuse_prompt.config["temperature"])
+    model = ChatGoogleGenerativeAI(model=model, temperature=temperature)
+    
 
 
     # Step 6: Create an LLMChain
     # Combine the LangChain prompt template and the LLM into an LLMChain.
-    chain = LLMChain(llm=llm, prompt=langchain_prompt)
+    chain = langchain_prompt | model
 
 
     # Step 7: Run the Chain
     # Execute the chain with the input text and process the response.
-    response = chain.invoke({"report": text_to_give})
-    tidy_response = response.get("text").replace("```json", "").replace("```", "").strip()
+
+    example_input = {
+        "report": text_to_give,
+    }
+    response = chain.invoke(input=example_input, config={"callbacks": [CallbackHandler]})
+    #response = chain.invoke({"report": text_to_give})
+
+    tidy_response = response.content[7:-3]
     try:
         a = json.loads(tidy_response)
         report = cache.get("selected")

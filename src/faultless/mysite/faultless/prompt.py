@@ -37,7 +37,8 @@ def send_prompt(new_rules, report):
             + new_rule["description"]
             + "\n"
             "return in a json object with following structure:"
-            "'matches': ['error_type': 'error name(only use the name i gave you)', 'message': 'simple description of the error and how to correct it', 'section': 'the place in the text to comment', ...],"
+            + "\n"
+            "'matches': ['error_type': 'error name(only use the name i gave you)', 'message': 'simple description of the error and how to correct it', 'original': 'the error word or phrase or sentence(depend on different type of error)','occurrence_index': 'occurrence times of the error', ...]"
             + "\n"
             + "\n"
             "Report: " 
@@ -57,16 +58,6 @@ def send_prompt(new_rules, report):
 
     # Get production prompt
     for new_rule in new_rules:
-        if new_rule["name"] == "Grammar and Spelling Check":
-            langfuse.create_prompt(
-            name = new_rule["name"],
-            prompt = new_rule["description"],
-            config={
-                "model": "gemini-2.0-flash",
-                "temperature": 0,
-            },
-            labels=["production"],
-        )
         create_prompt(new_rule)
 
     # Get report from the doc

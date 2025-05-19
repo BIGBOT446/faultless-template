@@ -1,62 +1,65 @@
 import json
-import importlib.resources
 from spire.doc import Comment, CommentMark, CommentMarkType, Document
 from faultless.marker.functions.spire.utils import remove_evaluation_warning
 from pathlib import Path
+from spire.doc import FileFormat
 
 def rules(ai_output, input_file):
-  # Load output Word document
-  input_file = Path(input_file)
-  output_file = input_file.with_stem(f"{input_file.stem}_modified")
+    input_file = Path(input_file)
+    # Load or create the output Word document
+    output_file = input_file.with_stem(f"{input_file.stem}_modified")
+    doc = Document()
+    if output_file.exists():
+        doc.LoadFromFile(str(output_file))
+    else:
+        doc.LoadFromFile(str(input_file))
 
-  doc = Document()
-  if output_file.exists():
-     doc.LoadFromFile(str(output_file))
-  else:
-     doc.LoadFromFile(str(input_file))
+    # (Optional) Clean evaluation warning text from full text if present
+    full_text = doc.GetText()
+    cleaned_text = full_text.replace(
+        "Evaluation Warning: The document was created with Spire.Doc for Python.", ""
+    ).strip()
 
-  # Get full plain text of the document
-  full_text = doc.GetText()
+    # Loop through each match from the AI output
+    for match in ai_output["matches"]:
+        original = match["original"]
+        occurrence_index = match.get("occurrence_index", 1)
+        message = match["message"]
+        error_type = match["error_type"]
 
-  # Add comments for each AI match
-  for match in ai_output["matches"]:
-      
-      section = match["section"]
+        # Find all occurrences of the original text in the document
+        all_matches = doc.FindAllString(original, False, True)
+        if not all_matches or len(all_matches) < int(occurrence_index):
+            print(f"Text '{original}' (occurrence {occurrence_index}) not found in document.")
+            continue
 
-      # Use FindAllString to get all matches of the word/phrase
-      all_matches = doc.FindAllString(section, False, True)
+        # Get the specific occurrence to comment (1-based index in the text)
+        text_selection = all_matches[occurrence_index - 1]
 
-      for i in range(len(all_matches)):
-          # Get the specific occurrence based on the occurrence index
-          text_selection = all_matches[i]
+        # Create a new comment with the AI's message
+        comment = Comment(doc)
+        comment.Body.AddParagraph().Text = message
+        comment.Format.Author = error_type
+        comment.Format.Initial = "AI"
 
-          # Create the comment
-          comment = Comment(doc)
-          comment.Body.AddParagraph().Text = match["message"]
-          comment.Format.Author = match["error_type"]
-          comment.Format.Initial = "AI"
+        # Identify the range of text to attach the comment to
+        text_range = text_selection.GetAsOneRange()
+        paragraph = text_range.OwnerParagraph
 
-          text_range = text_selection.GetAsOneRange()
-          paragraph = text_range.OwnerParagraph
+        # Insert the comment and comment marks around the text range
+        paragraph.ChildObjects.Insert(paragraph.ChildObjects.IndexOf(text_range) + 1, comment)
+        comment_start = CommentMark(doc, CommentMarkType.CommentStart)
+        comment_end = CommentMark(doc, CommentMarkType.CommentEnd)
+        comment_start.CommentId = comment.Format.CommentId
+        comment_end.CommentId = comment.Format.CommentId
+        idx = paragraph.ChildObjects.IndexOf(text_range)
+        paragraph.ChildObjects.Insert(idx, comment_start)
+        paragraph.ChildObjects.Insert(idx + 2, comment_end)
+        """paragraph.ChildObjects.Insert(paragraph.ChildObjects.IndexOf(text_range), comment_start)
+        paragraph.ChildObjects.Insert(paragraph.ChildObjects.IndexOf(text_range) + 2, comment_end)"""
 
-          # Insert comment into the paragraph
-          paragraph.ChildObjects.Insert(paragraph.ChildObjects.IndexOf(text_range) + 1, comment)
-
-          # Insert comment marks
-          comment_start = CommentMark(doc, CommentMarkType.CommentStart)
-          comment_end = CommentMark(doc, CommentMarkType.CommentEnd)
-          comment_start.CommentId = comment.Format.CommentId
-          comment_end.CommentId = comment.Format.CommentId
-          paragraph.ChildObjects.Insert(paragraph.ChildObjects.IndexOf(text_range), comment_start)
-          paragraph.ChildObjects.Insert(paragraph.ChildObjects.IndexOf(text_range) + 2, comment_end)
-
-  # Save and clean up
-  doc.SaveToFile(str(output_file))
-  doc.Close()
-  remove_evaluation_warning(output_file)
-  print("Processing completed.")
-
-
-
-
-  
+    # Save changes to a new file and remove any evaluation warning text
+    doc.SaveToFile(str(output_file), FileFormat.Docx)
+    doc.Close()
+    remove_evaluation_warning(output_file)
+    print("Grammar/spelling check comments inserted successfully.")
