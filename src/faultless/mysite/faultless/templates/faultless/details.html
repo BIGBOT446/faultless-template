@@ -201,6 +201,7 @@
 <br>
 <br>
 
+  <form method="post" style="display:inline;">
   <h2>Rules</h2>
   <table class="rule-table">
     <thead>
@@ -218,18 +219,15 @@
         <td>{{ x.scale }}</td>
         <td>{{ x.description }}</td>
         <td>
-          <form method="post" style="display:inline;">
             {% csrf_token %}
-            <input type="hidden" name="delete_rule_id" value="{{ x.id }}">
-            <button type="submit" class="delete-btn">Delete</button>
-          </form>
+            <input type="checkbox" name="selected_rules" value="{{ x.id }}">
         </td>
       </tr>
       {% endfor %}
+      </form>
     </tbody>
   </table>
 
-  <form method="POST">
     {% csrf_token %}
     <button type="submit" onclick="showPopup()" name="view_details" class="review-btn">Review</button>
   </form>

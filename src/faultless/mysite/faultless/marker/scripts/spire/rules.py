@@ -3,8 +3,10 @@ from spire.doc import Comment, CommentMark, CommentMarkType, Document
 from faultless.marker.functions.spire.utils import remove_evaluation_warning
 from pathlib import Path
 from spire.doc import FileFormat
+from faultless.models import Rules
 
 def rules(ai_output, input_file):
+    print(ai_output)
     input_file = Path(input_file)
     # Load or create the output Word document
     output_file = input_file.with_stem(f"{input_file.stem}_modified")
@@ -23,12 +25,24 @@ def rules(ai_output, input_file):
     # Loop through each match from the AI output
     for match in ai_output["matches"]:
         original = match["original"]
-        occurrence_index = match.get("occurrence_index", 1)
+        print(match.get("occurrence_index", 1))
+        occurrence_index = int(match.get("occurrence_index", 1))
         message = match["message"]
         error_type = match["error_type"]
 
+        # Check the scale level
+        scale = Rules.objects.get(name=error_type).scale
+        if scale <= 2:
+            level = "minor"
+        elif scale == 3:
+            level = "major"
+        else:
+            level = "critical"
+        error_type = f" [{level.upper()}]" + " " + error_type
+    
         # Find all occurrences of the original text in the document
         all_matches = doc.FindAllString(original, False, True)
+
         if not all_matches or len(all_matches) < int(occurrence_index):
             print(f"Text '{original}' (occurrence {occurrence_index}) not found in document.")
             continue

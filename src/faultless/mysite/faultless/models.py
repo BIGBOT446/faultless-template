@@ -5,6 +5,7 @@ from django.db import models
 
 # Create your models here.
 class Rules(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=30)
     scale = models.IntegerField()
     description = models.TextField()
@@ -37,6 +38,8 @@ class Document(models.Model):
         return self.file.name
 
 class Trace(models.Model):
-    path = models.CharField(max_length=255)
-    review_output = models.JSONField()
+    id = models.AutoField(primary_key=True)
+    file_name = models.CharField(max_length=255, blank=True, default='')
+    review_output = models.JSONField(default={"matches": []}, blank=True)
+    record_at = models.DateTimeField(auto_now_add=True)
 

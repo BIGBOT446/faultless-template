@@ -100,20 +100,15 @@ def ai_output(promptname, text_to_give):
     #response = chain.invoke({"report": text_to_give})
 
     tidy_response = response.content[7:-3]
-    try:
-        a = json.loads(tidy_response)
-        report = cache.get("selected")
-        if Trace.objects.filter(path=report).exists():
-            trace = Trace.objects.get(path=report)
-            
-            for data in a["matches"]:
-                trace.review_output["matches"].append(data)
-            trace.save()
-        else:
-            new_trace = Trace(path=report, review_output = a)
-            new_trace.save()
-    except:
-        a = str(tidy_response)
+    a = json.loads(tidy_response)
+
+    trace_id = cache.get("trace_id")
+    trace = Trace.objects.get(id=trace_id)
+        
+    for data in a["matches"]:
+        trace.review_output["matches"].append(data)
+    trace.save()
+
     
     return a
 
