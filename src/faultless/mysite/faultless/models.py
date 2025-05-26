@@ -1,5 +1,5 @@
 import os
-
+import json
 from django.db import models
 
 
@@ -9,6 +9,22 @@ class Rules(models.Model):
     name = models.CharField(max_length=30)
     scale = models.IntegerField()
     description = models.TextField()
+
+    def default_output_format():
+        data = {
+            'matches': [
+                {
+                    'error_type': 'error name(only use the name i gave you)',
+                    'message': 'simple description of the error and how to correct it',
+                    'original': 'the error word or phrase or sentence(depend on different type of error)',
+                    'occurrence_index': 'occurrence times of the error',
+                },
+            ]
+        }
+
+        return data
+    
+    output_format = models.JSONField(default=default_output_format)
 
     def __str__(self):
         return self.name

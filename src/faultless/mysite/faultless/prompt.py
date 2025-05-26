@@ -7,8 +7,8 @@ from langfuse.callback import CallbackHandler
 import os
 from .config import get
 from docx import Document
-from .doc_extractor import DocxExtractor
 from .models import Trace, Rules
+
 
 
 def send_prompt(new_rules, report):
@@ -30,6 +30,8 @@ def send_prompt(new_rules, report):
 
     langfuse = Langfuse()
     def create_prompt(new_rule):
+        format = str(new_rule.output_format).strip().replace("{", " ").replace("}", " ")
+
         langfuse.create_prompt(
             name=new_rule.name,
             prompt="You are a proofreader, designed to review an engineering report(it might contains sepcial words in engineering area so please be careful when you review) and find all the errors in it, please use the original report to find all the errors before you modify it. below there are some rules that help you to check the report\n"
@@ -40,7 +42,7 @@ def send_prompt(new_rules, report):
             + "\n"
             "return in a json object with following structure:"
             + "\n"
-            "'matches': ['error_type': 'error name(only use the name i gave you)', 'message': 'simple description of the error and how to correct it', 'original': 'the error word or phrase or sentence(depend on different type of error)','occurrence_index': 'occurrence times of the error', ...]"
+            + format
             + "\n"
             + "\n"
             "Report: " 

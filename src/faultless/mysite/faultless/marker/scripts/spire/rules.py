@@ -6,7 +6,6 @@ from spire.doc import FileFormat
 from faultless.models import Rules
 
 def rules(ai_output, input_file):
-    print(ai_output)
     input_file = Path(input_file)
     # Load or create the output Word document
     output_file = input_file.with_stem(f"{input_file.stem}_modified")
@@ -25,7 +24,6 @@ def rules(ai_output, input_file):
     # Loop through each match from the AI output
     for match in ai_output["matches"]:
         original = match["original"]
-        print(match.get("occurrence_index", 1))
         occurrence_index = int(match.get("occurrence_index", 1))
         message = match["message"]
         error_type = match["error_type"]

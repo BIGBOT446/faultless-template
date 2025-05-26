@@ -227,7 +227,11 @@
                         <label for="id_description">Description</label>
                         {% render_field form.description %}
                     </div>
-                    <button type="submit" class="btn-submit">Add Rule</button>
+                    <div class="form-group">
+                        <label for="output_format">Ouput Format (Advance Setting)</label>
+                        {% render_field form.output_format %}
+                    </div>                    
+                    <button type="submit" onclick=check() class="btn-submit">Add Rule</button>
                 </form>
             </div>
 
@@ -266,6 +270,12 @@
             </div>
         </div>
     </div>
+
+    {% if form.output_format.errors %}
+    <script>
+        alert("{{ form.output_format.errors.0|escapejs }}");
+    </script>
+    {% endif %}
 
     <script>
         document.querySelectorAll('.delete-btn').forEach(btn => {

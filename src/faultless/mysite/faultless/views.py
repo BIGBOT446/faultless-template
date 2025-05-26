@@ -37,15 +37,20 @@ def get_rule(request):
     data = Rules.objects.all().values()
 
     if request.method == "POST":
-
+        
         if "delete_rule_id" in request.POST:
             rule = get_object_or_404(Rules, pk=request.POST["delete_rule_id"])
             rule.delete()
             return redirect("get_rule")
         
         form = RuleForm(request.POST)
-        form.save()
-        return redirect("get_rule")
+        if form.is_valid():
+            form.save()
+            data = Rules.objects.all().values()
+            form = RuleForm()
+            return redirect("get_rule")
+        else:
+            return render(request, "faultless/rule.html", {"form": form, "allrules": data})
     
 
     else:
