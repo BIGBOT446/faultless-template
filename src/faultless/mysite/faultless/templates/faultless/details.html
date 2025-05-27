@@ -151,6 +151,12 @@
     button.review-btn:hover {
         background-color: #1976D2;
     }
+
+    .rule-table td:last-child,
+    .rule-table th:last-child {
+        text-align: center;
+        vertical-align: middle;
+    }
   </style>
 </head>
 
@@ -209,7 +215,10 @@
         <th>Name</th>
         <th>Scale</th>
         <th>Description</th>
-        <th></th>
+        <th style="text-align: center;">
+          <div style="font-size: 16px; color: #444;">Select All</div>
+          <input type="checkbox" id="selectAll" style="margin-top: 2px;">
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -239,6 +248,13 @@
         if (!confirm('Are you sure you want to delete this?')) {
           e.preventDefault();
         }
+      });
+    });
+
+    document.getElementById('selectAll').addEventListener('change', function() {
+      const checkboxes = document.querySelectorAll('input[name="selected_rules"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
       });
     });
   </script>
