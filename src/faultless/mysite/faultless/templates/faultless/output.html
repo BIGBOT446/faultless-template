@@ -1,119 +1,351 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Proofreading Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proofreading Report - Document Proofreader</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
-        body { font-family: sans-serif; margin: 2rem; }
-
-        h1 { margin-bottom: 1rem; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-
-        th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
-
-        th { background-color: #f5f5f5; }
-
-        .error-spelling { background-color: #ffecec; }
-
-        .error-units { background-color: #e7f4ff; }
-
-        .filter-buttons button {
-            margin-right: 10px;
+        /* Additional styles specific to output page */
+        .report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .report-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, var(--primary-light), #f3f4f6);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-btn {
             padding: 0.5rem 1rem;
-            border: none;
-            background-color: #ddd;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-primary);
+            border-radius: 9999px;
             cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-
-        .filter-buttons button.active {
-            background-color: #333;
+        
+        .filter-btn:hover {
+            background-color: var(--bg-tertiary);
+            border-color: var(--primary-color);
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary-color);
             color: white;
+            border-color: var(--primary-color);
         }
-
-        .fix { font-weight: bold; color: green; }
-
-        .code-box { font-family: monospace; background-color: #f0f0f0; padding: 2px 5px; border-radius: 3px; }
-
-        .btn-download {
+        
+        .error-count {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: normal;
+        }
+        
+        .code-box {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            word-break: break-word;
             display: inline-block;
-            margin-right: 1rem;
-            padding: 0.5rem 1rem;
-            background-color: #4caf50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
+            max-width: 100%;
         }
-
-        .btn-download:hover {
-            background-color: #45a049;
+        
+        .error-row {
+            transition: background-color 0.2s;
         }
+        
+        .error-row:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        .error-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-weight: 600;
+        }
+        
+        .message-cell {
+            max-width: 400px;
+            line-height: 1.5;
+        }
+        
+        .no-errors {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .no-errors-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .no-errors-text {
+            font-size: 1.125rem;
+        }
+        
+        /* Error type color coding */
+        .error-grammar { background-color: #fef3c7; }
+        .error-spelling { background-color: #fee2e2; }
+        .error-terminology { background-color: #e0e7ff; }
+        .error-format { background-color: #d1fae5; }
+        .error-mandatory { background-color: #fce7f3; }
     </style>
-    <script>
-        function filterErrors(type) {
-            const rows = document.querySelectorAll("tbody tr");
-            const buttons = document.querySelectorAll(".filter-buttons button");
-            buttons.forEach(b => b.classList.remove("active"));
-            document.getElementById("btn-" + type).classList.add("active");
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="{% url 'file_manager' %}" class="navbar-brand">
+                <div class="navbar-brand-icon">📄</div>
+                <span>DocProof</span>
+            </a>
+            
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"></path>
+                </svg>
+            </button>
+            
+            <div class="navbar-nav" id="navbarNav">
+                <a href="{% url 'file_manager' %}" class="nav-link">
+                    <span>📤</span> Upload
+                </a>
+                <a href="{% url 'get_rule' %}" class="nav-link">
+                    <span>📏</span> Rules
+                </a>
+                <a href="{% url 'view_details' %}" class="nav-link">
+                    <span>📊</span> Review
+                </a>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Main Content -->
+    <div class="container">
+        <div class="report-header">
+            <h1 class="report-title">
+                <span>📋</span> Proofreading Report
+            </h1>
+            {% if url %}
+            <a href="{{ url }}" class="btn btn-success">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v10m0 0l-3-3m3 3l3-3M3 12v3a1 1 0 001 1h12a1 1 0 001-1v-3"></path>
+                </svg>
+                Download Report
+            </a>
+            {% endif %}
+        </div>
+        
+        {% if matches %}
+        <!-- Summary Card -->
+        <div class="card summary-card">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="font-size: 2.5rem;">📊</div>
+                <div>
+                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Total Issues Found</div>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">{{ matches|length }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter Buttons -->
+        <div class="card">
+            <div class="filter-buttons" id="filterButtons">
+                <button class="filter-btn active" id="btn-all" onclick="filterErrors('all')">
+                    All Issues <span class="error-count">({{ matches|length }})</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Results Table -->
+        <div class="card">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th style="width: 200px;">Error Type</th>
+                            <th style="width: 250px;">Original Text</th>
+                            <th style="width: 100px;">Occurrence</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for match in matches %}
+                        <tr class="error-row error-{{ match.error_type|slugify }}" 
+                            data-error-type="{{ match.error_type|slugify }}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <span class="error-type-badge">{{ match.error_type }}</span>
+                            </td>
+                            <td>
+                                {% if match.original %}
+                                    <span class="code-box">{{ match.original }}</span>
+                                {% else %}
+                                    <span style="color: var(--text-secondary);">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if match.occurrence_index %}
+                                    <span class="badge badge-primary">#{{ match.occurrence_index }}</span>
+                                {% else %}
+                                    <span style="color: var(--text-secondary);">—</span>
+                                {% endif %}
+                            </td>
+                            <td class="message-cell">{{ match.message }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        {% else %}
+        <!-- No Errors Found -->
+        <div class="card">
+            <div class="no-errors">
+                <div class="no-errors-icon">✅</div>
+                <p class="no-errors-text">Great job! No errors found in your document.</p>
+                <p style="color: var(--text-secondary); margin-top: 1rem;">
+                    Your document passed all selected proofreading rules.
+                </p>
+                <a href="{% url 'view_details' %}" class="btn btn-primary" style="margin-top: 2rem;">
+                    Review Another Document
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            document.getElementById('navbarNav').classList.toggle('show');
+        }
+        
+        // Store error types and their counts
+        const errorTypes = {};
+        const rows = document.querySelectorAll("tbody tr");
+        
+        // Extract all unique error types from the data
+        rows.forEach(row => {
+            const errorTypeCell = row.querySelector("td:nth-child(2)");
+            if (errorTypeCell) {
+                const errorTypeName = errorTypeCell.textContent.trim();
+                const errorTypeKey = row.getAttribute("data-error-type");
+                
+                if (!errorTypes[errorTypeKey]) {
+                    errorTypes[errorTypeKey] = {
+                        name: errorTypeName,
+                        count: 0
+                    };
+                }
+                errorTypes[errorTypeKey].count++;
+            }
+        });
+        
+        // Generate filter buttons dynamically
+        function generateFilterButtons() {
+            const filterContainer = document.getElementById('filterButtons');
+            
+            // Sort error types by count (descending)
+            const sortedErrorTypes = Object.entries(errorTypes).sort((a, b) => b[1].count - a[1].count);
+            
+            // Create buttons for each error type
+            sortedErrorTypes.forEach(([errorTypeKey, errorData]) => {
+                const button = document.createElement('button');
+                button.className = 'filter-btn';
+                button.id = `btn-${errorTypeKey}`;
+                button.onclick = () => filterErrors(errorTypeKey);
+                
+                // Add appropriate icon based on error type
+                let icon = '🔍';
+                const lowerName = errorData.name.toLowerCase();
+                if (lowerName.includes('spelling') || lowerName.includes('grammar')) {
+                    icon = '📝';
+                } else if (lowerName.includes('unit') || lowerName.includes('symbol')) {
+                    icon = '📏';
+                } else if (lowerName.includes('terminology') || lowerName.includes('consistency')) {
+                    icon = '🏷️';
+                } else if (lowerName.includes('mandatory') || lowerName.includes('section')) {
+                    icon = '📋';
+                } else if (lowerName.includes('format')) {
+                    icon = '🎨';
+                }
+                
+                button.innerHTML = `${icon} ${errorData.name} <span class="error-count">(${errorData.count})</span>`;
+                filterContainer.appendChild(button);
+            });
+        }
+        
+        function filterErrors(type) {
+            const buttons = document.querySelectorAll(".filter-btn");
+            
+            // Update active button
+            buttons.forEach(b => b.classList.remove("active"));
+            const activeButton = document.getElementById("btn-" + type);
+            if (activeButton) {
+                activeButton.classList.add("active");
+            }
+            
+            // Show/hide rows
             rows.forEach(row => {
                 if (type === "all") {
                     row.style.display = "";
                 } else {
-                    row.style.display = row.classList.contains(type) ? "" : "none";
+                    const errorType = row.getAttribute("data-error-type");
+                    row.style.display = errorType === type ? "" : "none";
                 }
             });
+            
+            // Update row numbers
+            updateRowNumbers();
         }
+        
+        function updateRowNumbers() {
+            const visibleRows = document.querySelectorAll("tbody tr:not([style*='display: none'])");
+            visibleRows.forEach((row, index) => {
+                row.querySelector("td:first-child").textContent = index + 1;
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            if (rows.length > 0) {
+                generateFilterButtons();
+            }
+        });
     </script>
-</head>
-<body>
-    <h1>🧾 Document Proofreading Report</h1>
-
-    <div style="margin-top: 1rem; margin-bottom: 1rem;">
-        <a href="{{ url }}" class="btn-download">⬇️ Download File</a>
-    </div>
-
-    <div class="filter-buttons">
-        <button id="btn-all" class="active" onclick="filterErrors('all')">All</button>
-        <button id="btn-error-spelling" onclick="filterErrors('error-spelling')">🔠 Spelling Errors</button>
-        <button id="btn-error-units" onclick="filterErrors('error-units')">📏 Unit Issues</button>
-    </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Error Type</th>
-                <th>Original</th>
-                <th>Suggestion</th>
-                <th>Message</th>
-                <th>Section</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for match in matches %}
-            <tr class="{% if match.error_type == 'Spelling Error' %}error-spelling{% else %}error-units{% endif %}">
-                <td>{{ forloop.counter }}</td>
-                <td>{{ match.error_type }}</td>
-                <td><span class="code-box">{{ match.original|default:"—" }}</span></td>
-                <td>
-                    {% if match.replacements %}
-                        <span class="fix">{{ match.replacements.0 }}</span>
-                    {% else %}
-                        —
-                    {% endif %}
-                </td>
-                <td>{{ match.message }}</td>
-                <td>
-                    {% if match.section %}
-                        {{ match.section }}
-                    {% else %}
-                        —
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </body>
 </html>

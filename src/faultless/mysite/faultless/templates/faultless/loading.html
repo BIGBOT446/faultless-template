@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Document - Document Proofreader</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Additional styles specific to loading page */
+        .progress-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .progress-step.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+        
+        .progress-step.completed {
+            border-color: var(--success-color);
+            background-color: #d1fae5;
+        }
+        
+        .progress-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background-color: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .progress-step.active .progress-icon {
+            background-color: var(--primary-color);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        .progress-step.completed .progress-icon {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .progress-content {
+            flex: 1;
+        }
+        
+        .progress-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .progress-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .loading-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .loading-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .loading-subtitle {
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-container">
+            <div class="loading-header">
+                <h1 class="loading-title">Processing Your Document</h1>
+                <p class="loading-subtitle">Please wait while we analyze your document...</p>
+            </div>
+            
+            <div class="progress-steps">
+                <div class="progress-step active" id="step-1">
+                    <div class="progress-icon">📄</div>
+                    <div class="progress-content">
+                        <div class="progress-title">Reading Document</div>
+                        <div class="progress-description">Extracting content from your file</div>
+                    </div>
+                </div>
+                
+                <div class="progress-step" id="step-2">
+                    <div class="progress-icon">🤖</div>
+                    <div class="progress-content">
+                        <div class="progress-title">Connecting AI</div>
+                        <div class="progress-description">Initializing proofreading engine</div>
+                    </div>
+                </div>
+                
+                <div class="progress-step" id="step-3">
+                    <div class="progress-icon">📝</div>
+                    <div class="progress-content">
+                        <div class="progress-title">Analyzing Document</div>
+                        <div class="progress-description">Checking against selected rules</div>
+                    </div>
+                </div>
+                
+                <div class="progress-step" id="step-4">
+                    <div class="progress-icon">✅</div>
+                    <div class="progress-content">
+                        <div class="progress-title">Generating Report</div>
+                        <div class="progress-description">Preparing your results</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const steps = document.querySelectorAll('.progress-step');
+        let currentStep = 0;
+        
+        function updateProgress(stage) {
+            if (stage > currentStep && stage <= steps.length) {
+                // Mark current step as completed
+                steps[currentStep].classList.remove('active');
+                steps[currentStep].classList.add('completed');
+                steps[currentStep].querySelector('.progress-icon').textContent = '✓';
+                
+                // Mark next step as active
+                if (stage < steps.length) {
+                    steps[stage].classList.add('active');
+                }
+                
+                currentStep = stage;
+            }
+        }
+        
+        let processStage = 0;
+        const checkInterval = setInterval(() => {
+            fetch("{% url 'check_status' %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'completed') {
+                        clearInterval(checkInterval);
+                        // Mark last step as completed
+                        steps[steps.length - 1].classList.remove('active');
+                        steps[steps.length - 1].classList.add('completed');
+                        steps[steps.length - 1].querySelector('.progress-icon').textContent = '✓';
+                        
+                        // Redirect after a short delay
+                        setTimeout(() => {
+                            window.location.href = data.url;
+                        }, 500);
+                    } else if (data.status === 'processing') {
+                        const stage = data.process_stage;
+                        if (stage > processStage) {
+                            processStage = stage;
+                            updateProgress(stage);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking status:', error);
+                });
+        }, 3000);
+    </script>
+</body>
+</html>
