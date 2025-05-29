@@ -11,9 +11,8 @@ from . import sort
 from faultless.marker.llm import ai_output
 from faultless.marker.scripts.spire.grammar_spelling import grammar_spelling
 from faultless.marker.scripts.spire.rules import rules 
-from faultless.marker.scripts.spire.summary import insert_text_new_page 
 from pathlib import Path
-
+from .summary import summary
 
 import os
 import json
@@ -123,6 +122,7 @@ def get_response(request, rule_ids):
             output = ai_output(rule.name, text)
             rules(output, report)
 
+        summary()
         # get trace that stored in the database
         trace = Trace.objects.get(id=cache.get('trace_id'))
         relative_path = os.path.relpath(output_file, settings.MEDIA_ROOT)

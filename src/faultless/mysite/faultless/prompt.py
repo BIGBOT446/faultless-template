@@ -9,8 +9,6 @@ from .config import get
 from docx import Document
 from .models import Trace, Rules
 
-
-
 def send_prompt(new_rules, report):
     # get keys for your project from https://cloud.langfuse.com
     os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-03837ecb-bae5-4aa2-a319-1afb959284f5"

@@ -32,7 +32,7 @@ def rules(ai_output, input_file):
         scale = Rules.objects.get(name=error_type).scale
         if scale <= 2:
             level = "minor"
-        elif scale == 3:
+        elif 2 < scale <= 4:
             level = "major"
         else:
             level = "critical"

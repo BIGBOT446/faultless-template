@@ -27,7 +27,6 @@ from base.utils.config import get as get_config
 #from upload_file import upload_and_read_docx, upload_docx, read_docx
 from faultless.marker.scripts.spire.grammar_spelling import grammar_spelling
 from faultless.marker.scripts.spire.rules import rules
-from faultless.marker.scripts.spire.summary import insert_text_new_page
 from faultless.marker.functions.spire.utils import remove_evaluation_warning
 from ..models import Trace
 
@@ -104,9 +103,13 @@ def ai_output(promptname, text_to_give):
 
     trace_id = cache.get("trace_id")
     trace = Trace.objects.get(id=trace_id)
-        
+    
+    original_words = []
     for data in a["matches"]:
-        trace.review_output["matches"].append(data)
+        if data["original"] not in original_words:
+            trace.review_output["matches"].append(data)
+            original_words.append(data["original"])
+        
     trace.save()
 
     
