@@ -61,7 +61,7 @@
                                 </label>
                             </div>
                             
-                            <button type="button" onclick="deleteFile({{ d.id }})" class="btn btn-outline" style="padding: 0.25rem 0.75rem;">
+                            <button type="button" onclick="deleteFile('{{ d.id }}');" class="btn btn-outline" style="padding: 0.25rem 0.75rem;">
                                 <span>🗑️</span> Delete
                             </button>
                         </div>
@@ -139,12 +139,15 @@
                 checkbox.checked = this.checked;
             });
         });
-        
-        {% if message %}
+    </script>
+
+    {% if message %}
+    <script>
         window.onload = function() {
             alert("{{ message }}");
         }
-        {% endif %}
     </script>
+    {% endif %}
+    
 </body>
 </html>
