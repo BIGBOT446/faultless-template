@@ -71,16 +71,12 @@ def view_details(request):
         "allrules": data,
         "document": documents,
     }
-
-    """if len(documents) > 0:
-        report = documents[0].path"""
-    if request.method == "GET":
-        if "select_file" in request.GET:
-            file_name = request.GET.get("select_file", "")
-            report = get_object_or_404(Document, file=file_name).path
-            cache.set('selected', report, timeout=600)
             
     if request.method == "POST":
+        if "select_file" in request.POST:
+            file_name = request.POST.get("select_file")
+            report = get_object_or_404(Document, file=file_name).path
+            cache.set('selected', report, timeout=600)
 
         if "delete_id" in request.POST:
             document = get_object_or_404(Document, pk=request.POST["delete_id"])
