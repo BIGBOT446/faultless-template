@@ -33,7 +33,7 @@ def file_manager(request):
         form = DocumentForm()
 
     documents = Document.objects.all().order_by("-uploaded_at")
-    return render(request, "faultless/file_manager.html", {"form": form, "documents": documents, "document_count": Document.objects.count(), "rule_count": Rules.objects.count(), "review_count": Trace.objects.count()})
+    return render(request, "faultless/file_manager.html", {"form": form, "documents": documents, "report_count": Document.objects.count(), "rule_count": Rules.objects.count(), "review_count": Trace.objects.count()})
 
 
 def get_rule(request):
@@ -48,6 +48,7 @@ def get_rule(request):
         
         form = RuleForm(request.POST)
         if form.is_valid():
+            
             form.save()
             data = Rules.objects.all().values()
             form = RuleForm()
@@ -55,10 +56,53 @@ def get_rule(request):
         else:
             return render(request, "faultless/rule.html", {"form": form, "allrules": data})
     
-
     else:
         form = RuleForm()
     context = {"form": form, "allrules": data}
+    return render(request, "faultless/rule.html", context)
+
+
+def edit_rule(request, rule_id):
+    """View to handle editing a specific rule"""
+    rule = get_object_or_404(Rules, pk=rule_id)
+    
+    if request.method == "POST":
+        updated_fields = {}
+        
+        if 'name' in request.POST and request.POST['name'].strip():
+            new_name = request.POST['name'].strip()
+            if new_name != rule.name:
+                updated_fields['name'] = new_name
+        
+        if 'scale' in request.POST and request.POST['scale']:
+            new_scale = int(request.POST['scale'])
+            if new_scale != rule.scale:
+                updated_fields['scale'] = new_scale
+        
+        if 'description' in request.POST and request.POST['description'].strip():
+            new_description = request.POST['description'].strip()
+            if new_description != rule.description:
+                updated_fields['description'] = new_description
+        
+        if 'output_format' in request.POST:
+            new_output_format = request.POST['output_format'].strip()
+            if new_output_format != (rule.output_format or ''):
+                updated_fields['output_format'] = new_output_format
+        
+        if updated_fields:
+            for field, value in updated_fields.items():
+                setattr(rule, field, value)
+            rule.save()
+        
+        return redirect("get_rule")
+    
+    data = Rules.objects.all().values()
+    
+    context = {
+        "allrules": data, 
+        "editing_rule": rule,
+        "is_editing": True
+    }
     return render(request, "faultless/rule.html", context)
 
 
@@ -155,7 +199,6 @@ def check_status(request):
             'url': reverse('process_result')
         })
     else:
-    # Default response if status is neither processing nor completed
         return JsonResponse({
             'status': 'unknown',
             'message': 'No active process found'

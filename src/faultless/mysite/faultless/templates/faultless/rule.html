@@ -42,6 +42,11 @@
             box-shadow: 0 0 0 1px var(--primary-color);
         }
         
+        .rule-item.editing {
+            border-color: var(--warning-color);
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+        
         .rule-header {
             display: flex;
             justify-content: space-between;
@@ -114,6 +119,87 @@
                 top: 5rem;
             }
         }
+        
+        /* Form styling for edit mode */
+        .form-mode-indicator {
+            background: linear-gradient(135deg, var(--warning-color), rgba(255, 193, 7, 0.8));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .btn-cancel {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-cancel:hover {
+            background-color: var(--border-color);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .form-actions .btn {
+            flex: 1;
+        }
+        
+        /* Selective edit styles */
+        .current-value {
+            font-size: 0.75rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-left: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(var(--primary-color-rgb), 0.1);
+            border-radius: 0.25rem;
+        }
+        
+        .current-description, .current-format {
+            margin-top: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+        }
+        
+        .current-description summary, .current-format summary {
+            padding: 0.5rem;
+            cursor: pointer;
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .current-description summary:hover, .current-format summary:hover {
+            background-color: var(--border-color);
+        }
+        
+        .current-description p, .current-format pre {
+            padding: 0.75rem;
+            margin: 0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            background-color: var(--bg-primary);
+        }
+        
+        .current-format pre {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* Enhanced form hints for edit mode */
+        .form-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -122,7 +208,7 @@
         <div class="navbar-content">
             <a href="{% url 'file_manager' %}" class="navbar-brand">
                 <div class="navbar-brand-icon">📄</div>
-                <span>DocProof</span>
+                <span>Faultless</span>
             </a>
             
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
@@ -148,14 +234,95 @@
     <!-- Main Content -->
     <div class="container">
         <div class="rules-grid">
-            <!-- Add Rule Form -->
+            <!-- Add/Edit Rule Form -->
             <div class="card form-card">
+                {% if is_editing %}
+                <div class="form-mode-indicator">
+                    <span>✏️</span> Editing Rule: {{ editing_rule.name }}
+                </div>
+                {% endif %}
+                
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>➕</span> Add New Rule
+                        {% if is_editing %}
+                            <span>✏️</span> Edit Rule
+                        {% else %}
+                            <span>➕</span> Add New Rule
+                        {% endif %}
                     </h2>
                 </div>
                 
+                {% if is_editing %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            Rule Name
+                            <span class="current-value">Current: {{ editing_rule.name }}</span>
+                        </label>
+                        <input type="text" name="name" class="form-control" placeholder="Leave empty to keep current value">
+                        <p class="form-hint">Only fill if you want to change the name</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="scale" class="form-label">
+                            Severity Scale
+                            <span class="current-value">Current: {{ editing_rule.scale }}</span>
+                        </label>
+                        <select name="scale" class="form-control">
+                            <option value="">Keep current value ({{ editing_rule.scale }})</option>
+                            <option value="1">1 - Low</option>
+                            <option value="2">2</option>
+                            <option value="3">3 - Medium</option>
+                            <option value="4">4</option>
+                            <option value="5">5 - High</option>
+                        </select>
+                        <p class="form-hint">Select only if you want to change the scale</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description" class="form-label">
+                            Description
+                            <span class="current-value">Current length: {{ editing_rule.description|length }} chars</span>
+                        </label>
+                        <textarea name="description" class="form-control" rows="4" placeholder="Leave empty to keep current description"></textarea>
+                        <details class="current-description">
+                            <summary>View current description</summary>
+                            <p>{{ editing_rule.description }}</p>
+                        </details>
+                        <p class="form-hint">Only fill if you want to change the description</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="output_format" class="form-label">
+                            Output Format
+                            <span class="badge badge-primary" style="margin-left: 0.5rem;">Advanced</span>
+                            {% if editing_rule.output_format %}
+                                <span class="current-value">Has custom format</span>
+                            {% else %}
+                                <span class="current-value">Using default</span>
+                            {% endif %}
+                        </label>
+                        <textarea name="output_format" class="form-control" rows="3" placeholder="Leave empty to keep current format"></textarea>
+                        {% if editing_rule.output_format %}
+                        <details class="current-format">
+                            <summary>View current output format</summary>
+                            <pre>{{ editing_rule.output_format }}</pre>
+                        </details>
+                        {% endif %}
+                        <p class="form-hint">Only fill if you want to change the output format</p>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span>💾</span> Save Changes
+                        </button>
+                        <a href="{% url 'get_rule' %}" class="btn btn-cancel">
+                            <span>❌</span> Cancel
+                        </a>
+                    </div>
+                </form>
+                {% else %}
                 <form method="post">
                     {% csrf_token %}
                     <div class="form-group">
@@ -188,13 +355,14 @@
                         <span>✓</span> Add Rule
                     </button>
                 </form>
+                {% endif %}
             </div>
             
             <!-- Rules List -->
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>📋</span> Existing Rules
+                        <span>📝</span> Existing Rules
                         <span class="badge badge-primary" style="margin-left: auto;">{{ allrules|length }} rules</span>
                     </h2>
                 </div>
@@ -202,20 +370,30 @@
                 {% if allrules %}
                 <div class="rules-list">
                     {% for rule in allrules %}
-                    <div class="rule-item">
+                    <div class="rule-item {% if is_editing and editing_rule.id == rule.id %}editing{% endif %}">
                         <div class="rule-header">
                             <div class="rule-title-group">
                                 <span class="rule-name">{{ rule.name }}</span>
                                 <span class="badge {% if rule.scale >= 4 %}badge-danger{% elif rule.scale >= 2 %}badge-primary{% else %}badge-success{% endif %}">
                                     Scale: {{ rule.scale }}
                                 </span>
+                                {% if is_editing and editing_rule.id == rule.id %}
+                                <span class="badge" style="background-color: var(--warning-color); color: white;">
+                                    Editing
+                                </span>
+                                {% endif %}
                             </div>
                             <div class="rule-actions">
+                                {% if not is_editing or editing_rule.id != rule.id %}
+                                <a href="{% url 'edit_rule' rule.id %}" class="btn btn-secondary" style="padding: 0.25rem 0.75rem;">
+                                    Edit
+                                </a>
+                                {% endif %}
                                 <form method="post" style="margin: 0;">
                                     {% csrf_token %}
                                     <input type="hidden" name="delete_rule_id" value="{{ rule.id }}">
                                     <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.75rem;">
-                                        <span>🗑️</span> Delete
+                                        Delete
                                     </button>
                                 </form>
                             </div>
@@ -244,7 +422,7 @@
         </div>
     </div>
 
-    {% if form.output_format.errors %}
+    {% if not is_editing and form.output_format.errors %}
     <script>
         alert("{{ form.output_format.errors.0|escapejs }}");
     </script>

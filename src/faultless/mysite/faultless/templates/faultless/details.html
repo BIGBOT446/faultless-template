@@ -13,7 +13,7 @@
         <div class="navbar-content">
             <a href="{% url 'file_manager' %}" class="navbar-brand">
                 <div class="navbar-brand-icon">📄</div>
-                <span>DocProof</span>
+                <span>Faultless</span>
             </a>
             
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
@@ -62,7 +62,7 @@
                             </div>
                             
                             <button type="button" onclick="deleteFile('{{ d.id }}');" class="btn btn-outline" style="padding: 0.25rem 0.75rem;">
-                                <span>🗑️</span> Delete
+                                Delete
                             </button>
                         </div>
                         {% endfor %}
@@ -78,7 +78,7 @@
             <div class="card">
                 <div class="card-header" style="display: flex; align-items: center; justify-content: space-between;">
                     <h2 class="card-title">
-                        <span>📏</span> Select Rules to Apply
+                        <span>📝</span> Select Rules to Apply
                     </h2>
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                         <input type="checkbox" id="selectAll">
@@ -109,7 +109,7 @@
             <!-- Review Button -->
             <div style="display: flex; justify-content: center; margin-top: 2rem;">
                 <button type="submit" name="view_details" class="btn btn-success btn-lg">
-                    <span>🔍</span> Start Review
+                    Start Review
                 </button>
             </div>
         </form>

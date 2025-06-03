@@ -129,7 +129,7 @@
         <div class="navbar-content">
             <a href="{% url 'file_manager' %}" class="navbar-brand">
                 <div class="navbar-brand-icon">📄</div>
-                <span>DocProof</span>
+                <span>Faultless</span>
             </a>
             
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
@@ -293,7 +293,7 @@
                 let icon = '🔍';
                 const lowerName = errorData.name.toLowerCase();
                 if (lowerName.includes('spelling') || lowerName.includes('grammar')) {
-                    icon = '📝';
+                    icon = '🔠';
                 } else if (lowerName.includes('unit') || lowerName.includes('symbol')) {
                     icon = '📏';
                 } else if (lowerName.includes('terminology') || lowerName.includes('consistency')) {

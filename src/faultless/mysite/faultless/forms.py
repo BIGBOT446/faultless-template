@@ -13,6 +13,7 @@ class RuleForm(forms.ModelForm):
                     "class": "inputbox",
                     "id": "description",
                     "placeholder": "Description",
+                    "style": "width: 100%; height: 200px;",
                 }
             ),
             "name": forms.Textarea(
@@ -20,6 +21,7 @@ class RuleForm(forms.ModelForm):
                     "class": "name",
                     "id": "name",
                     "placeholder": "Name",
+                    "style": "width: 100%; height: 50px;",
                 }
             ),
             "scale": forms.NumberInput(
@@ -35,7 +37,8 @@ class RuleForm(forms.ModelForm):
                 attrs={
                     "rows": 10,
                     "cols": 60,
-                    "placeholder": '{"matches": [{"error_type": "", "message": "", "original": "", "occurrence_index": ""}]}'
+                    "placeholder": '{"matches": [{"error_type": "", "message": "", "original": "", "occurrence_index": ""}]}',
+                    "style": "width: 100%; height: 200px;",
                 }
             ),
         }

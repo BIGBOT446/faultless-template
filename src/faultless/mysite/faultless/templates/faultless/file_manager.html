@@ -6,6 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload File - Document Proofreader</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <style>
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 15px;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -13,7 +32,7 @@
         <div class="navbar-content">
             <a href="{% url 'file_manager' %}" class="navbar-brand">
                 <div class="navbar-brand-icon">📄</div>
-                <span>DocProof</span>
+                <span>Faultless</span>
             </a>
             
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
@@ -72,11 +91,11 @@
             <div class="grid grid-cols-3" style="gap: 1rem;">
                 <div class="card stat-card">
                     <div class="stat-icon">📄</div>
-                    <div class="stat-value">{{ document_count|default:"0" }}</div>
-                    <div class="stat-label">Documents</div>
+                    <div class="stat-value">{{ report_count|default:"0" }}</div>
+                    <div class="stat-label">Reports</div>
                 </div>
                 <div class="card stat-card">
-                    <div class="stat-icon">📏</div>
+                    <div class="stat-icon">📝</div>
                     <div class="stat-value">{{ rule_count|default:"0" }}</div>
                     <div class="stat-label">Rules</div>
                 </div>

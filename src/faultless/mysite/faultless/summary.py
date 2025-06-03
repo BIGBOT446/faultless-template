@@ -272,7 +272,7 @@ def write_summary(score, quality, feedback, critical_errors, severity_frequency,
 
 def document_quality_score(severity_frequency):
     error_score = severity_frequency["minor"] * 1 + severity_frequency["major"] * 2 + severity_frequency["critical"] * 5
-    score = max(0, 100 - 0.7 * error_score)
+    score = max(0, 100 - round(0.7 * error_score, 1))
 
     if score < 50:
         quality = "Poor"
