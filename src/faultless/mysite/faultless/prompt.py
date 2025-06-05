@@ -1,7 +1,4 @@
 from pathlib import Path
-
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 import os
@@ -20,7 +17,7 @@ def send_prompt(new_rules, report):
     os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
     
     # your openai key
-    os.environ["OPENAI_API_KEY"] = llm_config["api_key"]
+    os.environ["LANGFUSE_GOOGLE_API_KEY"] = llm_config["api_key"]
     
     langfuse = Langfuse()
 

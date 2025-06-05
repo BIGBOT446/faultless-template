@@ -41,7 +41,7 @@ def ai_output(promptname, text_to_give):
     os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
     
     # your openai key
-    os.environ["OPENAI_API_KEY"] = llm_config["api_key"]
+    os.environ["LANGFUSE_GOOGLE_API_KEY"] = llm_config["api_key"]
     
     langfuse = Langfuse()
 
