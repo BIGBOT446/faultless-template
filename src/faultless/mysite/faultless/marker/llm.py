@@ -35,11 +35,16 @@ def ai_output(promptname, text_to_give):
 
     # Step 2: Initialize Langfuse Client
     # Create a Langfuse client using the configuration values.
-    langfuse = Langfuse(
-        secret_key=langfuse_config["secret_key"],
-        public_key=langfuse_config["public_key"],
-        host=langfuse_config["host"],
-    )
+    # get keys for your project from https://cloud.langfuse.com
+    os.environ["LANGFUSE_PUBLIC_KEY"] = langfuse_config["public_key"]
+    os.environ["LANGFUSE_SECRET_KEY"] = langfuse_config["secret_key"]
+    os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
+    
+    # your openai key
+    os.environ["OPENAI_API_KEY"] = llm_config["api_key"]
+    
+    langfuse = Langfuse()
+
 
     try:
         trace = langfuse.trace(name="connection-test", tags=["connectivity"])

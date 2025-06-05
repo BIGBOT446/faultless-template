@@ -18,11 +18,15 @@ def get_feedback(errors):
     langfuse_config = get(value="langfuse", file=config_file / "platforms.yml")
     llm_config = get(value="google", file=config_file / "llm.yml")
 
-    langfuse = Langfuse(
-        secret_key=langfuse_config["secret_key"],
-        public_key=langfuse_config["public_key"],
-        host=langfuse_config["host"],
-    )
+    # get keys for your project from https://cloud.langfuse.com
+    os.environ["LANGFUSE_PUBLIC_KEY"] = langfuse_config["public_key"]
+    os.environ["LANGFUSE_SECRET_KEY"] = langfuse_config["secret_key"]
+    os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
+    
+    # your openai key
+    os.environ["OPENAI_API_KEY"] = llm_config["api_key"]
+    
+    langfuse = Langfuse()
 
 
     langfuse.create_prompt(
