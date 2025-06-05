@@ -171,5 +171,4 @@ doc/source/_apidoc/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-.sqlite3
 .docx
