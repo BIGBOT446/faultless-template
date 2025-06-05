@@ -1,34 +1,29 @@
 from .models import Trace, Rules
 from django.core.cache import cache
-from faultless.marker.functions.spire.utils import remove_evaluation_warning
+from faultless.marker.utils import remove_evaluation_warning
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 import spire.doc
 import os
+from .config import get
 from docx import Document
 from pathlib import Path
 import json
 
 def get_feedback(errors):
     # get keys for your project from https://cloud.langfuse.com
-    os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-03837ecb-bae5-4aa2-a319-1afb959284f5"
-    os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-b860425a-38b3-4c13-a85c-5b1c0c38605a"
-    os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
-    os.environ["GOOGLE_API_KEY"] = "AIzaSyBBYnENqtXiXais7x7t9LANWGEcOQLzA4Q"
-
-    """config_file = Path("./src/faultless/config")
+    config_file = Path("./src/faultless/config")
     langfuse_config = get(value="langfuse", file=config_file / "platforms.yml")
-    llm_config = get(value="google", file=config_file / "llm.yml")"""
+    llm_config = get(value="google", file=config_file / "llm.yml")
 
-    """langfuse = Langfuse(
+    langfuse = Langfuse(
         secret_key=langfuse_config["secret_key"],
         public_key=langfuse_config["public_key"],
         host=langfuse_config["host"],
-    )"""
+    )
 
-    langfuse = Langfuse()
 
     langfuse.create_prompt(
         name="Summary",
@@ -57,8 +52,6 @@ def get_feedback(errors):
         },
         labels=["production"],
     )
-
-    langfuse = Langfuse()
 
     langfuse_callback_handler = CallbackHandler()
 
@@ -272,7 +265,7 @@ def write_summary(score, quality, feedback, critical_errors, severity_frequency,
 
 def document_quality_score(severity_frequency):
     error_score = severity_frequency["minor"] * 1 + severity_frequency["major"] * 2 + severity_frequency["critical"] * 5
-    score = max(0, 100 - round(0.7 * error_score, 1))
+    score = max(0, round(100 - 0.5 * error_score))
 
     if score < 50:
         quality = "Poor"

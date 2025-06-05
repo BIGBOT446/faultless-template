@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import logging
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,7 @@ SECRET_KEY = "django-insecure-^gc@zt_rng=+w$ibno(4e#($0-7!8ri8h^3h9y7m0^5l)21fi=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.elasticbeanstalk.com', '127.0.0.1', 'localhost', '13.238.178.200']
 
 
 # Application definition
@@ -133,8 +134,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Default cache location
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  # good for development
-        'LOCATION': 'unique-faultless',
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "my_cache_table", 
     }
 }
+
+logging.basicConfig(level=logging.INFO)

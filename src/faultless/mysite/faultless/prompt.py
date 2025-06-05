@@ -11,22 +11,16 @@ from .models import Trace, Rules
 
 def send_prompt(new_rules, report):
     # get keys for your project from https://cloud.langfuse.com
-    os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-03837ecb-bae5-4aa2-a319-1afb959284f5"
-    os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-b860425a-38b3-4c13-a85c-5b1c0c38605a"
-    os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
-    os.environ["GOOGLE_API_KEY"] = "AIzaSyBBYnENqtXiXais7x7t9LANWGEcOQLzA4Q"
-
-    """config_file = Path("./src/faultless/config")
+    config_file = Path("./src/faultless/config")
     langfuse_config = get(value="langfuse", file=config_file / "platforms.yml")
-    llm_config = get(value="google", file=config_file / "llm.yml")"""
+    llm_config = get(value="google", file=config_file / "llm.yml")
 
-    """langfuse = Langfuse(
+    langfuse = Langfuse(
         secret_key=langfuse_config["secret_key"],
         public_key=langfuse_config["public_key"],
         host=langfuse_config["host"],
-    )"""
+    )
 
-    langfuse = Langfuse()
     def create_prompt(new_rule):
         format = str(new_rule.output_format).strip().replace("{", " ").replace("}", " ")
 
@@ -54,7 +48,6 @@ def send_prompt(new_rules, report):
             labels=["production"],
         )
 
-    langfuse = Langfuse()
 
     langfuse_callback_handler = CallbackHandler()
 
@@ -68,24 +61,5 @@ def send_prompt(new_rules, report):
     #text = DocxExtractor(report).extractDocumentBodyText()
 
     return text
-    """langfuse_prompt = langfuse.get_prompt("report_check")
 
-    langchain_prompt = ChatPromptTemplate.from_template(
-        langfuse_prompt.get_langchain_prompt(),
-        metadata={"langfuse_prompt": langfuse_prompt},
-    )
-
-    model = langfuse_prompt.config["model"]
-
-    temperature = str(langfuse_prompt.config["temperature"])
-    model = ChatGoogleGenerativeAI(model=model, temperature=temperature)
-    chain = langchain_prompt | model
-    
-    example_input = {
-        "report": text
-    }
-    response = chain.invoke(input=example_input, config={"callbacks": [langfuse_callback_handler]})
-
-    new_trace = Trace(path=report, review_output = response.content[7:-3])
-    new_trace.save()"""
 

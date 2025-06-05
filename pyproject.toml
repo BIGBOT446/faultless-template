@@ -31,6 +31,7 @@ dependencies = [
   "spire",
   "spire.doc",
   "django-widget-tweaks",
+  "django-background-tasks",
 ]
 
 [project.optional-dependencies]

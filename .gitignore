@@ -165,3 +165,11 @@ src/**/_version.py
 
 # Automatically generated Sphinx API documentation
 doc/source/_apidoc/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+.sqlite3
+.docx

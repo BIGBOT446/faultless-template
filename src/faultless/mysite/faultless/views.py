@@ -1,7 +1,5 @@
 from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
-from django.template import loader
 from django.conf import settings
-from django.conf.urls.static import static
 from django.http import JsonResponse
 from django.urls import reverse
 
@@ -9,10 +7,8 @@ from .forms import DocumentForm, RuleForm
 from .models import Document, Rules, Trace
 from .prompt import send_prompt
 from django.core.cache import cache
-from . import sort
 from faultless.marker.llm import ai_output
-from faultless.marker.scripts.spire.grammar_spelling import grammar_spelling
-from faultless.marker.scripts.spire.rules import rules 
+from faultless.marker.rules import rules 
 from pathlib import Path
 from .summary import summary
 
@@ -20,7 +16,8 @@ import os
 import json
 import threading
 import time
-
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.pip
 def file_manager(request):
@@ -63,7 +60,6 @@ def get_rule(request):
 
 
 def edit_rule(request, rule_id):
-    """View to handle editing a specific rule"""
     rule = get_object_or_404(Rules, pk=rule_id)
     
     if request.method == "POST":
@@ -149,38 +145,51 @@ def get_response(request, rule_ids):
     new_trace.save()
     cache.set('trace_id', new_trace.id, timeout=600)
 
-    if request.method == "POST":
-
+    try:
         cache.set("process_stage", 1, timeout=300)
-        rule_list = []
-        for i in range(len(rule_ids)):
-            rule_list.append(Rules.objects.get(id=rule_ids[i]))
+        logger.info("1 cached")
+    except Exception as e:
+        logger.error("cannot cache process stage 1: %s", e)
+    
+    time.sleep(1)
+    rule_list = []
+    for i in range(len(rule_ids)):
+        rule_list.append(Rules.objects.get(id=rule_ids[i]))
 
-        text = send_prompt(rule_list, report)
+    text = send_prompt(rule_list, report)
 
-        cache.set("process_stage", 2, timeout=300)
+    cache.set("process_stage", 2, timeout=300)
+    time.sleep(1)
+    input_file = Path(report)
+    output_file = input_file.with_stem(f"{input_file.stem}_modified")
+    cache.set('output_file', output_file, timeout=600)
+    if output_file.exists():
+        output_file.unlink()
 
-        input_file = Path(report)
-        output_file = input_file.with_stem(f"{input_file.stem}_modified")
-        cache.set('output_file', output_file, timeout=600)
-        if output_file.exists():
-            output_file.unlink()
-
-        for rule in rule_list:
-            output = ai_output(rule.name, text)
-            rules(output, report)
-        cache.set("process_stage", 3, timeout=300)
-
-        summary()
-        cache.set("process_stage", 4, timeout=300)
-        time.sleep(3)
-        cache.set("status", "completed", timeout=300)
+    for rule in rule_list:
+        output = ai_output(rule.name, text)
+        rules(output, report)
+    cache.set("process_stage", 3, timeout=300)
+    time.sleep(1)
+    summary()
+    cache.set("process_stage", 4, timeout=300)
+    time.sleep(1)
+    time.sleep(3)
+    cache.set("status", "completed", timeout=300)
 
 
 def star_process(request, rule_ids):
-    cache.set("status", "processing", timeout=300)
-    thread = threading.Thread(target=get_response, args=(request, rule_ids))
-    thread.start()
+    try:
+        cache.set("status", "processing", timeout=300)
+        logger.info("process cached")
+    except Exception as e:
+        logger.error("cannot cache process status: %s", e)
+    try:
+        logger.info("Thread running")
+        thread = threading.Thread(target=get_response, args=(request, rule_ids))
+        thread.start()
+    except Exception as e:
+        logger.error("cannot create thread: %s", e)
 
     return render(request, "faultless/loading.html")
 

@@ -143,34 +143,41 @@
     <script>
         const steps = document.querySelectorAll('.progress-step');
         let currentStep = 0;
-        
+
         function updateProgress(stage) {
-            if (stage > currentStep && stage <= steps.length) {
-                // Mark current step as completed
-                steps[currentStep].classList.remove('active');
-                steps[currentStep].classList.add('completed');
-                steps[currentStep].querySelector('.progress-icon').textContent = '✓';
-                
-                // Mark next step as active
-                if (stage < steps.length) {
-                    steps[stage].classList.add('active');
+            // Complete all steps that are lower than the current stage
+            for (let i = 0; i < stage && i < steps.length; i++) {
+                if (!steps[i].classList.contains('completed')) {
+                    steps[i].classList.remove('active');
+                    steps[i].classList.add('completed');
+                    steps[i].querySelector('.progress-icon').textContent = '✓';
                 }
-                
-                currentStep = stage;
             }
+            
+            // Mark the current stage as active (if it's not the last step and not already completed)
+            if (stage < steps.length && !steps[stage].classList.contains('completed')) {
+                // Remove active class from any other steps
+                steps.forEach(step => step.classList.remove('active'));
+                steps[stage].classList.add('active');
+            }
+            
+            currentStep = Math.max(currentStep, stage);
         }
-        
+
         let processStage = 0;
         const checkInterval = setInterval(() => {
             fetch("{% url 'check_status' %}")
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Status response:', data); // Debug logging
                     if (data.status === 'completed') {
                         clearInterval(checkInterval);
-                        // Mark last step as completed
-                        steps[steps.length - 1].classList.remove('active');
-                        steps[steps.length - 1].classList.add('completed');
-                        steps[steps.length - 1].querySelector('.progress-icon').textContent = '✓';
+                        // Mark all steps as completed
+                        steps.forEach((step, index) => {
+                            step.classList.remove('active');
+                            step.classList.add('completed');
+                            step.querySelector('.progress-icon').textContent = '✓';
+                        });
                         
                         // Redirect after a short delay
                         setTimeout(() => {
@@ -178,6 +185,7 @@
                         }, 500);
                     } else if (data.status === 'processing') {
                         const stage = data.process_stage;
+                        console.log('Current stage:', stage, 'Previous stage:', processStage); // Debug logging
                         if (stage > processStage) {
                             processStage = stage;
                             updateProgress(stage);
