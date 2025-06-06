@@ -13,13 +13,9 @@
 
 ## Subsystem Overview
 
-### ONLYOFFICE Docs
-- [ONLYOFFICE Docs API documentation](https://api.onlyoffice.com/docs/docs-api/additional-api/document-builder-api/)
-- [Examples on how to integrate ONLYOFFICE into your Python application](https://github.com/ONLYOFFICE/document-server-integration/tree/master/web/documentserver-example/python)
-
 ### Langfuse
 
-The `quick_start_example.py` script demonstrates how to integrate ***Langfuse*** with ***LangChain*** to perform grammar and spelling checks using Google Gemini. To use this script, ensure the following environment variables are set in your `.env` file:
+Langfuse is an open-source observability and analytics tool for LLM applications. It helps developers track, evaluate, and improve LLM-based workflows by logging prompts, responses, user feedback, latency, and other metrics in real time. Langfuse supports A/B testing, trace visualization, and prompt performance comparison—making it ideal for debugging and optimizing prompt engineering pipelines. Ensure the following environment variables are set in your `.env` file:
 
 - `LANGFUSE_SECRET_KEY`
 - `LANGFUSE_PUBLIC_KEY`
@@ -89,6 +85,15 @@ your VS Code settings (your current directory should be the root of the repo):
 ./tasks/dev_sync.ps1
 ```
 
+### Starting Django locally
+
+Run the following commands in Windows Commandline to start django:
+
+```bash
+cd src/faultless/mysite
+python manage.py runserver
+```
+
 ## Other Development Tasks
 
 ### Adding a dependency (or regenerating the requirements files.)
@@ -111,5 +116,7 @@ Run the following command in Windows Powershell to release a new version of the 
 
 The branch will be automatically created and pushed to BitBucket, ready for a PR to be
 created.
+
+
 
 
