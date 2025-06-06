@@ -56,7 +56,7 @@ Currently, senior technical engineers manually review reports for clarity, compl
 
 ### Definitions
 - **Faultless**: The name of the **Automated Report Review System**.
-- **Laptop**: The user’s device, responsible for **uploading documents for review** and **downloading the reviewed document** after processing is complete.
+- **Laptop**: The user's device, responsible for **uploading documents for review** and **downloading the reviewed document** after processing is complete.
 - **Integration Hub**: The **central orchestrator** that manages document processing, coordinating interactions between all subsystems, storing analysis results, and ensuring smooth data flow.
 - **Rule Engine**: Processes documents by **applying validation rules** in the form of prompts fetched from the **Prompt Management System (PMS)** and sending them to **AI Agents** for analysis.
 - **Prompt Management System (PMS)**: A system responsible for **storing and managing prompts (rules)** used by the **Rule Engine** to guide AI-based document analysis.
@@ -116,6 +116,29 @@ Run the following command in Windows Powershell to release a new version of the 
 
 The branch will be automatically created and pushed to BitBucket, ready for a PR to be
 created.
+
+## Python Scripts Overview
+
+| Script Name | Purpose |
+|------------|---------|
+| manage.py | Django's command-line utility for administrative tasks and project management |
+| settings.py | Core Django settings and configuration for the project |
+| urls.py | Main URL configuration and routing for the project |
+| wsgi.py | WSGI configuration for web server deployment |
+| asgi.py | ASGI configuration for asynchronous web server deployment |
+| views.py | Contains view functions handling HTTP requests and business logic |
+| models.py | Defines database models for Documents, Rules, and Traces |
+| urls.py | URL routing configuration for the faultless application |
+| forms.py | Form definitions for document and rule management |
+| admin.py | Django admin interface configuration |
+| apps.py | Application configuration for the faultless app |
+| config.py | Configuration utilities and helper functions |
+| prompt.py | Handles prompt generation and processing |
+| summary.py | Manages document summarization functionality |
+| llm.py | Integrates Langfuse with LangChain using Google Gemini for text analysis |
+| rules.py | Handles document annotation and comment insertion based on AI analysis |
+| upload_file.py | Manages document upload and text extraction from Word files |
+| utils.py | Utility functions for document processing and warning removal |
 
 
 
