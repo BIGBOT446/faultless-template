@@ -200,6 +200,32 @@
             font-style: italic;
             margin-top: 0.25rem;
         }
+
+        /* Form validation error styles */
+        .is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+        .invalid-feedback {
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: #dc3545;
+        }
+
+        .alert {
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
     </style>
 </head>
 <body>
@@ -255,12 +281,28 @@
                 {% if is_editing %}
                 <form method="post">
                     {% csrf_token %}
+                    <!-- Display non-field errors if any -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
                     <div class="form-group">
                         <label for="name" class="form-label">
                             Rule Name
                             <span class="current-value">Current: {{ editing_rule.name }}</span>
                         </label>
-                        <input type="text" name="name" class="form-control" placeholder="Leave empty to keep current value">
+                        <input type="text" name="name" class="form-control{% if form.name.errors %} is-invalid{% endif %}" placeholder="Leave empty to keep current value">
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <p class="form-hint">Only fill if you want to change the name</p>
                     </div>
                     
@@ -269,7 +311,7 @@
                             Severity Scale
                             <span class="current-value">Current: {{ editing_rule.scale }}</span>
                         </label>
-                        <select name="scale" class="form-control">
+                        <select name="scale" class="form-control{% if form.scale.errors %} is-invalid{% endif %}">
                             <option value="">Keep current value ({{ editing_rule.scale }})</option>
                             <option value="1">1 - Low</option>
                             <option value="2">2</option>
@@ -277,6 +319,13 @@
                             <option value="4">4</option>
                             <option value="5">5 - High</option>
                         </select>
+                        {% if form.scale.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.scale.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <p class="form-hint">Select only if you want to change the scale</p>
                     </div>
                     
@@ -285,7 +334,14 @@
                             Description
                             <span class="current-value">Current length: {{ editing_rule.description|length }} chars</span>
                         </label>
-                        <textarea name="description" class="form-control" rows="4" placeholder="Leave empty to keep current description"></textarea>
+                        <textarea name="description" class="form-control{% if form.description.errors %} is-invalid{% endif %}" rows="4" placeholder="Leave empty to keep current description"></textarea>
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.description.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <details class="current-description">
                             <summary>View current description</summary>
                             <p>{{ editing_rule.description }}</p>
@@ -303,7 +359,14 @@
                                 <span class="current-value">Using default</span>
                             {% endif %}
                         </label>
-                        <textarea name="output_format" class="form-control" rows="3" placeholder="Leave empty to keep current format"></textarea>
+                        <textarea name="output_format" class="form-control{% if form.output_format.errors %} is-invalid{% endif %}" rows="3" placeholder="Leave empty to keep current format"></textarea>
+                        {% if form.output_format.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.output_format.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         {% if editing_rule.output_format %}
                         <details class="current-format">
                             <summary>View current output format</summary>

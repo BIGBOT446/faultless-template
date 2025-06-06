@@ -76,40 +76,46 @@ def edit_rule(request, rule_id):
     rule = get_object_or_404(Rules, pk=rule_id)
 
     if request.method == "POST":
-        updated_fields = {}
-
-        if "name" in request.POST and request.POST["name"].strip():
-            new_name = request.POST["name"].strip()
-            if new_name != rule.name:
-                updated_fields["name"] = new_name
-
+        form_data = {}
+        
+        if request.POST.get("name", "").strip():
+            form_data["name"] = request.POST["name"].strip()
+        else:
+            form_data["name"] = rule.name  
+            
         if request.POST.get("scale"):
-            new_scale = int(request.POST["scale"])
-            if new_scale != rule.scale:
-                updated_fields["scale"] = new_scale
+            form_data["scale"] = request.POST["scale"]
+        else:
+            form_data["scale"] = rule.scale  
+            
+        if request.POST.get("description", "").strip():
+            form_data["description"] = request.POST["description"].strip()
+        else:
+            form_data["description"] = rule.description  
+            
+        if request.POST.get("output_format", "").strip():
+            form_data["output_format"] = request.POST["output_format"].strip()
+        else:
+            form_data["output_format"] = rule.output_format  
 
-        if "description" in request.POST and request.POST["description"].strip():
-            new_description = request.POST["description"].strip()
-            if new_description != rule.description:
-                updated_fields["description"] = new_description
-
-        if "output_format" in request.POST:
-            new_output_format = request.POST["output_format"].strip()
-            if new_output_format != (rule.output_format or ""):
-                updated_fields["output_format"] = new_output_format
-
-        if updated_fields:
-            for field, value in updated_fields.items():
-                setattr(rule, field, value)
-            rule.save()
-
-        return redirect("get_rule")
+        form = RuleForm(form_data, instance=rule)
+        
+        if form.is_valid():
+            form.save()
+            return redirect("get_rule")
+        else:
+            data = Rules.objects.all().values()
+            context = {
+                "allrules": data, 
+                "editing_rule": rule, 
+                "is_editing": True,
+                "form": form  
+            }
+            return render(request, "faultless/rule.html", context)
 
     data = Rules.objects.all().values()
-
     context = {"allrules": data, "editing_rule": rule, "is_editing": True}
     return render(request, "faultless/rule.html", context)
-
 
 def view_details(request):
     data = Rules.objects.all().values()
