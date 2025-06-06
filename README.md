@@ -117,6 +117,49 @@ Run the following command in Windows Powershell to release a new version of the 
 The branch will be automatically created and pushed to BitBucket, ready for a PR to be
 created.
 
+## User Experience Design
+
+### Feedback System
+FAULTLESS is designed to provide clear, actionable feedback while maintaining a clean and focused user experience. The system implements several key features to ensure effective communication:
+
+- **Upload Confirmation**: Users receive immediate visual confirmation when a file is successfully uploaded
+- **Progress Tracking**: A loading indicator shows the document analysis progress
+- **Error Highlighting**: Different colors indicate error severity in the document:
+  - Green: Minor issues
+  - Yellow: Major issues
+  - Red: Critical issues
+
+### Quality Scoring System
+Documents are evaluated using a comprehensive scoring system:
+
+| Error Level | Points | Examples |
+|------------|--------|----------|
+| Minor | 1 point | Formatting inconsistencies, style suggestions |
+| Major | 2 points | Grammar errors, unclear phrasing |
+| Critical | 5 points | Technical inaccuracies, compliance violations |
+
+The final document score is calculated as:
+```
+Score = 100 - (0.5 * Total Error Points)
+```
+
+Quality levels are mapped as follows:
+- Excellent: 90-100
+- Good: 80-89
+- Average: 70-79
+- Poor: <70
+
+### Smart Comment Management
+To maintain clarity and prevent information overload:
+- Duplicate errors are consolidated into a single comment
+- Each unique issue is reported only once, even if it appears multiple times
+- Comments are organized by severity level for easy prioritization
+
+This approach ensures that:
+- Users aren't overwhelmed by repetitive feedback
+- Critical issues stand out clearly
+- The review process remains efficient and focused
+
 ## Python Scripts Overview
 
 | Script Name | Purpose |
