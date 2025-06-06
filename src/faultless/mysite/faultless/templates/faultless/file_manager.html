@@ -24,6 +24,59 @@
         .stat-label {
             font-size: 15px;
         }
+        
+        .success-message {
+            background-color: #d1fae5;
+            border: 2px solid #10b981;
+            border-radius: var(--border-radius, 8px);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #065f46;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        .success-icon {
+            font-size: 1.25rem;
+        }
+        
+        .success-text {
+            font-weight: 600;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .close-button {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #065f46;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .close-button:hover {
+            background-color: rgba(6, 95, 70, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -58,6 +111,17 @@
     <!-- Main Content -->
     <div class="container">
         <div class="grid grid-cols-1" style="max-width: 600px; margin: 0 auto;">
+            <!-- Success Message -->
+            {% if success_message %}
+            <div class="success-message" id="success-message">
+                <span class="success-icon">✅</span>
+                <span class="success-text">{{ success_message }}</span>
+                <button class="close-button" onclick="closeSuccessMessage()" title="Close">
+                    ×
+                </button>
+            </div>
+            {% endif %}
+            
             <div class="card">
                 <div class="card-header">
                     <h1 class="card-title">
@@ -74,7 +138,7 @@
                         <label for="id_file" class="form-label">Choose a file</label>
                         {{ form.file }}
                         <p class="form-hint">
-                            Supported formats: .docx, .pdf, .txt
+                            Supported formats: .docx
                         </p>
                     </div>
                     
@@ -112,6 +176,39 @@
         function toggleMobileMenu() {
             document.getElementById('navbarNav').classList.toggle('show');
         }
+        
+        function closeSuccessMessage() {
+            const successMessage = document.getElementById('success-message');
+            if (successMessage) {
+                successMessage.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 300);
+            }
+        }
+        
+        // Auto-hide success message after 5 seconds
+        {% if success_message %}
+        setTimeout(() => {
+            closeSuccessMessage();
+        }, 5000);
+        {% endif %}
+        
+        // Add slideUp animation for closing
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideUp {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

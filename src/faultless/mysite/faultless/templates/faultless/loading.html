@@ -35,6 +35,11 @@
             background-color: #d1fae5;
         }
         
+        .progress-step.error {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        
         .progress-icon {
             width: 3rem;
             height: 3rem;
@@ -55,6 +60,11 @@
         
         .progress-step.completed .progress-icon {
             background-color: var(--success-color);
+            color: white;
+        }
+        
+        .progress-step.error .progress-icon {
+            background-color: #ef4444;
             color: white;
         }
         
@@ -93,6 +103,54 @@
         
         .loading-subtitle {
             color: var(--text-secondary);
+        }
+        
+        .error-container {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .error-message {
+            background-color: #fee2e2;
+            border: 2px solid #ef4444;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #dc2626;
+        }
+        
+        .error-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .error-description {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .error-details {
+            font-size: 0.75rem;
+            color: #7f1d1d;
+            font-style: italic;
+        }
+        
+        .return-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .return-button:hover {
+            background-color: var(--primary-dark, #1d4ed8);
         }
     </style>
 </head>
@@ -137,11 +195,28 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="error-container" id="error-container">
+                <div class="error-message">
+                    <div class="error-title">Processing Failed</div>
+                    <div class="error-description">
+                        An error occurred while processing your document.
+                    </div>
+                    <div class="error-details" id="error-details"></div>
+                </div>
+                <button class="return-button" onclick="goBack()">
+                    Return to Previous Page
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
         const steps = document.querySelectorAll('.progress-step');
+        const errorContainer = document.getElementById('error-container');
+        const errorDetails = document.getElementById('error-details');
+        const loadingHeader = document.querySelector('.loading-header');
+        const progressSteps = document.querySelector('.progress-steps');
         let currentStep = 0;
 
         function updateProgress(stage) {
@@ -164,6 +239,28 @@
             currentStep = Math.max(currentStep, stage);
         }
 
+        function showError(errorMessage) {
+            // Hide loading content
+            loadingHeader.style.display = 'none';
+            progressSteps.style.display = 'none';
+            
+            // Mark the current step as error
+            if (currentStep < steps.length) {
+                steps[currentStep].classList.remove('active');
+                steps[currentStep].classList.add('error');
+                steps[currentStep].querySelector('.progress-icon').textContent = '❌';
+            }
+            
+            // Show error container
+            errorDetails.textContent = errorMessage;
+            errorContainer.style.display = 'block';
+        }
+
+        function goBack() {
+            // Go back to the previous page in browser history
+            window.history.back();
+        }
+
         let processStage = 0;
         const checkInterval = setInterval(() => {
             fetch("{% url 'check_status' %}")
@@ -183,6 +280,9 @@
                         setTimeout(() => {
                             window.location.href = data.url;
                         }, 500);
+                    } else if (data.status === 'error') {
+                        clearInterval(checkInterval);
+                        showError(data.error_message || 'An unknown error occurred');
                     } else if (data.status === 'processing') {
                         const stage = data.process_stage;
                         console.log('Current stage:', stage, 'Previous stage:', processStage); // Debug logging
@@ -194,6 +294,8 @@
                 })
                 .catch(error => {
                     console.error('Error checking status:', error);
+                    clearInterval(checkInterval);
+                    showError('Failed to check processing status. Please try again.');
                 });
         }, 3000);
     </script>
