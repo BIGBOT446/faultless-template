@@ -183,6 +183,107 @@ This approach ensures that:
 | upload_file.py | Manages document upload and text extraction from Word files |
 | utils.py | Utility functions for document processing and warning removal |
 
+## How to Use FAULTLESS
+
+### 1. Getting Started 🚀
+
+#### Environment Setup
+```powershell
+# Run in Windows PowerShell (from repository root)
+./tasks/dev_sync.ps1
+```
+
+#### Launch Application
+```bash
+# Run in Windows Command Line
+cd src/faultless/mysite
+python manage.py runserver
+```
+
+#### Access Web Interface
+Open your browser and navigate to:
+> http://127.0.0.1:8000/
+
+---
+
+### 2. Document Management 📄
+
+#### Uploading Documents
+<div align="center">
+  <img src="image/upload.png" alt="Upload Interface" width="400"/>
+  <p><em>Document Upload Interface</em></p>
+</div>
+
+**Steps:**
+1. Click "Choose File" button
+2. Select your document (.doc or .docx format)
+3. Wait for the confirmation message
+
+---
+
+### 3. Rule Management ⚙️
+
+#### Creating New Rules
+<div align="center">
+  <img src="image/addrule.png" alt="Add Rule Interface" width="350"/>
+  <p><em>Rule Creation Interface</em></p>
+</div>
+
+**Rule Configuration Parameters:**
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| Rule Name | Clear identifier | "Terminology Consistency" |
+| Severity Scale | Importance (1-5) | 3 (Major) |
+| Description | Detection criteria | "Check for consistent technical terms" |
+| Output Format | JSON structure | Customizable error locations |
+
+#### Managing Existing Rules
+<div align="center">
+  <img src="image/rules.png" alt="Rules Management" width="450"/>
+  <p><em>Rules Management Dashboard</em></p>
+</div>
+
+**Available Actions:**
+- 👀 View all rules
+- ✏️ Edit rule parameters
+- 🗑️ Remove unnecessary rules
+
+---
+
+### 4. Document Review Process 🔍
+
+#### Step 1: Select Document
+<div align="center">
+  <img src="image/selectfile.png" alt="Select Document" width="600"/>
+  <p><em>Document Selection Interface</em></p>
+</div>
+
+#### Step 2: Configure Review
+<div align="center">
+  <img src="image/selectrule.png" alt="Select Rules" width="600"/>
+  <p><em>Rule Selection Interface</em></p>
+</div>
+
+**Configuration:**
+- ✅ Select applicable rules
+- 🚀 Click "Review" to begin analysis
+
+#### Step 3: Review Results
+<div align="center">
+  <img src="image/output.png" alt="Review Output" width="600"/>
+  <p><em>Review Results Dashboard</em></p>
+</div>
+
+**Output Features:**
+- 📊 Comprehensive error overview
+- 📝 Annotated document with:
+  - Inline comments
+  - Color-coded error highlighting
+  - Detailed summary report
+- ⬇️ Download option for reviewed document
+
+---
+
 
 
 
