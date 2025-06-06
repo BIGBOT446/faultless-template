@@ -30,9 +30,8 @@ def file_manager(request):
         if form.is_valid():
             document = form.save()
             success_message = f"Successfully uploaded '{document.file.name}'"
-            form = DocumentForm()  # Reset form after successful upload
+            form = DocumentForm()  
         else:
-            # If form is not valid, we'll show the form with errors
             pass
     else:
         form = DocumentForm()
