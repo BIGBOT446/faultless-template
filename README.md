@@ -1,14 +1,13 @@
 # Faultless: AI-Powered Proofreader for Engineering Reports
 
 <!-- badges: start -->
-![Python Version](<https://img.shields.io/badge/python-3.12.7-green>)
-[![Confluence](<hhttps://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737>)
-![Licence](<https://img.shields.io/badge/licence-proprietary-red>)
-[![Ruff](<https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json>)](<https://github.com/astral-sh/ruff>)
-[![pre-commit](<https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit>)](<https://github.com/pre-commit/pre-commit>)
-[![SonarQube](<https://img.shields.io/badge/code_analysis-SonarQube-lightgrey>)](<https://tonkintaylor-sonarqube.azurewebsites.net/dashboard?id=tonkintaylor_py-faultless-template_fc9da0e6-8d82-4eb7-bb9d-c81c6497408a>)
-
-[![Jira](<https://img.shields.io/badge/tasks-jira-blue>)](<https://tonkintaylor.atlassian.net/browse/CAPSTONE>)
+![Python Version](https://img.shields.io/badge/python-3.12.7-green)
+[![Confluence](https://img.shields.io/badge/docs-Confluence-blue)](https://tonkintaylor.atlassian.net/wiki/spaces/CAPSTONE/pages/1422196737)
+![Licence](https://img.shields.io/badge/licence-proprietary-red)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![SonarQube](https://img.shields.io/badge/code_analysis-SonarQube-lightgrey)](https://tonkintaylor-sonarqube.azurewebsites.net/dashboard?id=tonkintaylor_py-faultless-template_fc9da0e6-8d82-4eb7-bb9d-c81c6497408a)
+[![Jira](https://img.shields.io/badge/tasks-Jira-blue)](https://tonkintaylor.atlassian.net/browse/CAPSTONE)
 <!-- badges: end -->
 
 ## Subsystem Overview
