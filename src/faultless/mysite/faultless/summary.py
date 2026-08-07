@@ -12,7 +12,7 @@ from langfuse.callback import CallbackHandler
 
 from faultless.marker.utils import remove_evaluation_warning
 
-from .config import get
+from .config import find_config_file, get
 from .models import Rules, Trace
 
 
@@ -32,21 +32,12 @@ def get_feedback(errors):
 
     langfuse = Langfuse()
 
+    summary_prompt_file = find_config_file("prompts.csv", use_parent=True)
+    summary_prompt_text = summary_prompt_file.read_text(encoding="utf-8")
+
     langfuse.create_prompt(
         name="Summary",
-        prompt="You are a given a report and a list of the errors that found in the report. You need to evaluate the quality of the report and give some feedback. A well-crafted summary gives authors a high-level view of issues and guidance on where to start.\n"
-        + "Also go through the error list and find out 8 most critical errors in the report."
-        + "\n"
-        + "\n"
-        "return in a json object with following structure:"
-        + "\n"
-        + "'feedback': <feedback on the report quality and how to improve it>, 'critical_errors': <list of 8 most critical errors(in short description) in the report>"
-        + "\n"
-        + "\n"
-        "Report: " + "\n" + "\n"
-        "{{report}}" + "\n" + "\n"
-        "Errors: " + "\n" + "\n"
-        "{{errors}}",
+        prompt=summary_prompt_text,
         config={
             "model": "gemini-2.0-flash",
             "temperature": 0,
@@ -63,8 +54,14 @@ def get_feedback(errors):
 
     langfuse_prompt = langfuse.get_prompt("Summary")
 
+    # Escape literal braces (e.g. JSON schema examples) so LangChain only treats
+    # {report} and {errors} as template variables.
+    prompt_text = langfuse_prompt.get_langchain_prompt()
+    prompt_text = prompt_text.replace("{", "{{").replace("}", "}}")
+    prompt_text = prompt_text.replace("{{report}}", "{report}").replace("{{errors}}", "{errors}")
+
     langchain_prompt = ChatPromptTemplate.from_template(
-        langfuse_prompt.get_langchain_prompt(),
+        prompt_text,
         metadata={"langfuse_prompt": langfuse_prompt},
     )
 
@@ -86,7 +83,14 @@ def get_feedback(errors):
     }
     response = chain.invoke(input=example_input, config={"callbacks": [langfuse_callback_handler]})
 
-    return json.loads(response.content[7:-3])
+    content = response.content.strip()
+    if content.startswith("```"):
+        content = content.strip("`")
+        if content.startswith("json"):
+            content = content[len("json") :]
+        content = content.strip()
+
+    return json.loads(content)
 
 
 def write_summary(score, quality, feedback, critical_errors, severity_frequency, type_frequency):
