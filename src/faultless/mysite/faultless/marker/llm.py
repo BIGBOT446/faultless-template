@@ -9,24 +9,22 @@ Using LangChain is one way to utilize prompts from Langfuse. Depending on your u
 solutions might be more suitable.
 """
 
-import json
 import os
 from pathlib import Path
 
 from django.core.cache import cache
+from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 
 from faultless.config import get
-
-from ..models import Trace
-
-# from upload_file import upload_and_read_docx, upload_docx, read_docx
+from faultless.models import Trace
 
 
-def ai_output(promptname, text_to_give):
+def ai_output(promptname: str, text_to_give: str) -> dict:
+    """Run the Langfuse-managed prompt for a rule through Gemini and return parsed JSON."""
     # Step 1: Load Configuration
     # Load Langfuse and LLM configurations from YAML files.
     config_file = Path("./src/faultless/config")
@@ -49,7 +47,7 @@ def ai_output(promptname, text_to_give):
         trace = langfuse.trace(name="connection-test", tags=["connectivity"])
         print("✅ Successfully connected and created test trace.")
         print(f"Trace ID: {trace.id}")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - best-effort connectivity check, must not abort the run
         print("❌ Failed to connect to Langfuse API.")
         print("Error:", e)
 
@@ -71,9 +69,10 @@ def ai_output(promptname, text_to_give):
     temperature = str(langfuse_prompt.config["temperature"])
     model = ChatGoogleGenerativeAI(model=model, temperature=temperature)
 
-    # Step 6: Create an LLMChain
-    # Combine the LangChain prompt template and the LLM into an LLMChain.
-    chain = langchain_prompt | model
+    # Step 6: Create an LCEL chain
+    # Prompt -> model -> JsonOutputParser, so markdown-fenced JSON no longer
+    # needs manual slicing (parse_json_markdown handles ```json fences).
+    chain = langchain_prompt | model | JsonOutputParser()
 
     # Step 7: Run the Chain
     # Execute the chain with the input text and process the response.
@@ -81,11 +80,7 @@ def ai_output(promptname, text_to_give):
     example_input = {
         "report": text_to_give,
     }
-    response = chain.invoke(input=example_input, config={"callbacks": [CallbackHandler]})
-    # response = chain.invoke({"report": text_to_give})
-
-    tidy_response = response.content[7:-3]
-    a = json.loads(tidy_response)
+    a = chain.invoke(input=example_input, config={"callbacks": [CallbackHandler]})
 
     trace_id = cache.get("trace_id")
     trace = Trace.objects.get(id=trace_id)
