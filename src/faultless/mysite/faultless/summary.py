@@ -6,13 +6,13 @@ import spire.doc
 from django.core.cache import cache
 from docx import Document
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 
 from faultless.marker.utils import remove_evaluation_warning
 
 from .config import find_config_file, get
+from .llm_factory import get_chat_model, model_name, strip_json_fence
 from .models import Rules, Trace
 
 
@@ -20,15 +20,11 @@ def get_feedback(errors):
     # get keys for your project from https://cloud.langfuse.com
     config_file = Path("./src/faultless/config")
     langfuse_config = get(value="langfuse", file=config_file / "platforms.yml")
-    llm_config = get(value="google", file=config_file / "llm.yml")
 
     # get keys for your project from https://cloud.langfuse.com
     os.environ["LANGFUSE_PUBLIC_KEY"] = langfuse_config["public_key"]
     os.environ["LANGFUSE_SECRET_KEY"] = langfuse_config["secret_key"]
     os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
-
-    # your openai key
-    os.environ["GOOGLE_API_KEY"] = llm_config["api_key"]
 
     langfuse = Langfuse()
 
@@ -39,7 +35,7 @@ def get_feedback(errors):
         name="Summary",
         prompt=summary_prompt_text,
         config={
-            "model": "gemini-2.0-flash",
+            "model": model_name(),
             "temperature": 0,
         },
         labels=["production"],
@@ -65,10 +61,8 @@ def get_feedback(errors):
         metadata={"langfuse_prompt": langfuse_prompt},
     )
 
-    model = langfuse_prompt.config["model"]
-
-    temperature = str(langfuse_prompt.config["temperature"])
-    model = ChatGoogleGenerativeAI(model=model, temperature=temperature)
+    temperature = langfuse_prompt.config.get("temperature", 0)
+    model = get_chat_model(temperature=temperature)
     chain = langchain_prompt | model
 
     error_texts = []
@@ -83,14 +77,7 @@ def get_feedback(errors):
     }
     response = chain.invoke(input=example_input, config={"callbacks": [langfuse_callback_handler]})
 
-    content = response.content.strip()
-    if content.startswith("```"):
-        content = content.strip("`")
-        if content.startswith("json"):
-            content = content[len("json") :]
-        content = content.strip()
-
-    return json.loads(content)
+    return json.loads(strip_json_fence(response.content))
 
 
 def write_summary(score, quality, feedback, critical_errors, severity_frequency, type_frequency):

@@ -175,3 +175,6 @@ doc/source/_apidoc/
 .sqlite3
 .sqlite
 
+
+# Faultless benchmark：报告可能含客户资料，不入库
+bench/reports/*.docx

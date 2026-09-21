@@ -1,7 +1,7 @@
-"""How to Integrate Langfuse with LangChain Using Google Gemini
+"""How to Integrate Langfuse with LangChain Using DeepSeek (previously Google Gemini)
 
 This guide demonstrates how to integrate Langfuse with LangChain to perform a grammar and spelling
-check on a sample text using Google Gemini. Langfuse provides prompt management and tracing, while
+check on a sample text using DeepSeek. Langfuse provides prompt management and tracing, while
 LangChain facilitates the interaction with the LLM.
 
 Disclaimer:
@@ -15,21 +15,20 @@ from pathlib import Path
 from django.core.cache import cache
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 
 from faultless.config import get
+from faultless.llm_factory import get_chat_model
 from faultless.models import Trace
 
 
 def ai_output(promptname: str, text_to_give: str) -> dict:
-    """Run the Langfuse-managed prompt for a rule through Gemini and return parsed JSON."""
+    """Run the Langfuse-managed prompt for a rule through DeepSeek and return parsed JSON."""
     # Step 1: Load Configuration
     # Load Langfuse and LLM configurations from YAML files.
     config_file = Path("./src/faultless/config")
     langfuse_config = get(value="langfuse", file=config_file / "platforms.yml")
-    llm_config = get(value="google", file=config_file / "llm.yml")
 
     # Step 2: Initialize Langfuse Client
     # Create a Langfuse client using the configuration values.
@@ -37,9 +36,6 @@ def ai_output(promptname: str, text_to_give: str) -> dict:
     os.environ["LANGFUSE_PUBLIC_KEY"] = langfuse_config["public_key"]
     os.environ["LANGFUSE_SECRET_KEY"] = langfuse_config["secret_key"]
     os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
-
-    # your openai key
-    os.environ["GOOGLE_API_KEY"] = llm_config["api_key"]
 
     langfuse = Langfuse()
 
@@ -63,11 +59,12 @@ def ai_output(promptname: str, text_to_give: str) -> dict:
     )
 
     # Step 5: Initialize the LLM
-    # Set up the Google Gemini model with zero temperature for deterministic output.
-    model = langfuse_prompt.config["model"]
-
-    temperature = str(langfuse_prompt.config["temperature"])
-    model = ChatGoogleGenerativeAI(model=model, temperature=temperature)
+    # The model now comes from config/llm.yml rather than the Langfuse prompt config,
+    # which still holds the old "gemini-2.0-flash" name. Temperature is still taken from
+    # the prompt config. JSON mode guarantees syntactically valid JSON; JsonOutputParser
+    # is kept so fenced output is still handled.
+    temperature = langfuse_prompt.config.get("temperature", 0)
+    model = get_chat_model(json_mode=True, temperature=temperature)
 
     # Step 6: Create an LCEL chain
     # Prompt -> model -> JsonOutputParser, so markdown-fenced JSON no longer
@@ -80,7 +77,7 @@ def ai_output(promptname: str, text_to_give: str) -> dict:
     example_input = {
         "report": text_to_give,
     }
-    a = chain.invoke(input=example_input, config={"callbacks": [CallbackHandler]})
+    a = chain.invoke(input=example_input, config={"callbacks": [CallbackHandler()]})
 
     trace_id = cache.get("trace_id")
     trace = Trace.objects.get(id=trace_id)

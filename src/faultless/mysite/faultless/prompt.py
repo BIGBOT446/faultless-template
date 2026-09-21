@@ -1,18 +1,20 @@
-import os
 from pathlib import Path
-from dotenv import load_dotenv
+
 from docx import Document
+from dotenv import load_dotenv
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 
 from .config import get
+from .llm_factory import model_name
+
 
 def send_prompt(new_rules, report):
     load_dotenv()
     config_file = Path("./src/faultless/config")
 
     _ = get(value="langfuse", file=config_file / "platforms.yml")
-    _ = get(value="google", file=config_file / "llm.yml")
+    _ = get(value="deepseek", file=config_file / "llm.yml")
 
     langfuse = Langfuse()
 
@@ -32,7 +34,7 @@ def send_prompt(new_rules, report):
             "Report: " + "\n" + "\n"
             "{{report}}",
             config={
-                "model": "gemini-2.0-flash",
+                "model": model_name(),
                 "temperature": 0,
             },
             labels=["production"],
