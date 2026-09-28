@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from docx import Document
 from dotenv import load_dotenv
 from langfuse import Langfuse
 from langfuse.callback import CallbackHandler
 
 from .config import get
+from .extract import extract_text
 from .llm_factory import model_name
 
 
@@ -46,9 +46,5 @@ def send_prompt(new_rules, report):
     for new_rule in new_rules:
         create_prompt(new_rule)
 
-    # Get report from the doc
-    body = Document(report)
-    text = "\n".join([para.text for para in body.paragraphs])
-    # text = DocxExtractor(report).extractDocumentBodyText()
-
-    return text
+    # Get report from the doc, including table content (see faultless.extract)
+    return extract_text(report)

@@ -43,6 +43,7 @@ Currently, senior technical engineers manually review reports for clarity, compl
 - **Automated Report Review System**: Develop an AI-driven tool to review reports before they reach senior engineers, identifying common issues and improving efficiency.
 - **Structured Review Process**: Implement a system where reports are annotated with suggested changes in a Word document, enabling engineers to accept or reject recommendations.
 - **Version Control & Metrics**: Track report quality over time, similar to version control in coding, to monitor improvements or recurring issues.
+- See [EVALUATION.md](EVALUATION.md) for benchmark methodology and results.
 
 ## System Design
 

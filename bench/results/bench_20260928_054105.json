@@ -1,0 +1,114 @@
+{
+  "summary": {
+    "model": "deepseek-chat",
+    "reports": 1,
+    "total_matches": 122,
+    "calls": 5,
+    "call_success_rate": 1.0,
+    "failures_by_stage": {},
+    "truncated_calls": 0,
+    "silently_truncated_calls": 0,
+    "incomplete_matches": 0,
+    "per_report_latency_s": {
+      "mean": 25.27,
+      "median": 25.27,
+      "min": 25.27,
+      "max": 25.27
+    },
+    "per_report_input_tokens": {
+      "mean": 37329,
+      "median": 37329,
+      "min": 37329,
+      "max": 37329
+    },
+    "per_report_output_tokens": {
+      "mean": 7989,
+      "median": 7989,
+      "min": 7989,
+      "max": 7989
+    },
+    "per_call_latency_s": {
+      "mean": 5.05,
+      "median": 1.91,
+      "min": 0.99,
+      "max": 16.94
+    },
+    "matches_per_call": {
+      "mean": 24.4,
+      "median": 3,
+      "min": 1,
+      "max": 101
+    }
+  },
+  "per_report": [
+    {
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "chars": 35091,
+      "latency_s": 25.266,
+      "input_tokens": 37329,
+      "output_tokens": 7989
+    }
+  ],
+  "calls": [
+    {
+      "latency_s": 16.939,
+      "input_tokens": 7462,
+      "output_tokens": 6379,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 101,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Grammar and Spelling Check"
+    },
+    {
+      "latency_s": 1.914,
+      "input_tokens": 7510,
+      "output_tokens": 254,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 3,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Units and Symbols Consistency"
+    },
+    {
+      "latency_s": 1.482,
+      "input_tokens": 7473,
+      "output_tokens": 205,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 3,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Terminology Consistency"
+    },
+    {
+      "latency_s": 0.993,
+      "input_tokens": 7367,
+      "output_tokens": 78,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 1,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Mandatory Sections Present"
+    },
+    {
+      "latency_s": 3.938,
+      "input_tokens": 7517,
+      "output_tokens": 1073,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 14,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Acronym Definitions and Usage"
+    }
+  ]
+}

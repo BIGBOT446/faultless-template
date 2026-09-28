@@ -1,0 +1,179 @@
+{
+  "summary": {
+    "model": "deepseek-chat",
+    "reports": 2,
+    "total_matches": 45,
+    "calls": 10,
+    "call_success_rate": 0.9,
+    "failures_by_stage": {
+      "api": 1
+    },
+    "truncated_calls": 0,
+    "silently_truncated_calls": 0,
+    "incomplete_matches": 0,
+    "per_report_latency_s": {
+      "mean": 18.93,
+      "median": 18.93,
+      "min": 6.25,
+      "max": 31.61
+    },
+    "per_report_input_tokens": {
+      "mean": 15765.5,
+      "median": 15765.5,
+      "min": 1664,
+      "max": 29867
+    },
+    "per_report_output_tokens": {
+      "mean": 1755.5,
+      "median": 1755.5,
+      "min": 568,
+      "max": 2943
+    },
+    "per_call_latency_s": {
+      "mean": 3.79,
+      "median": 1.39,
+      "min": 0.95,
+      "max": 19.99
+    },
+    "matches_per_call": {
+      "mean": 5,
+      "median": 1,
+      "min": 1,
+      "max": 18
+    }
+  },
+  "per_report": [
+    {
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "chars": 35091,
+      "latency_s": 31.605,
+      "input_tokens": 29867,
+      "output_tokens": 2943
+    },
+    {
+      "report": "manual_test_input.docx",
+      "chars": 50,
+      "latency_s": 6.25,
+      "input_tokens": 1664,
+      "output_tokens": 568
+    }
+  ],
+  "calls": [
+    {
+      "ok": false,
+      "stage": "api",
+      "error": "Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=8192, prompt_tokens=7462, total_tokens=15654, completion_tokens_details=None, prompt_tokens_details",
+      "latency_s": 19.988857099961024,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Grammar and Spelling Check"
+    },
+    {
+      "latency_s": 1.888,
+      "input_tokens": 7510,
+      "output_tokens": 251,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 3,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Units and Symbols Consistency"
+    },
+    {
+      "latency_s": 4.427,
+      "input_tokens": 7473,
+      "output_tokens": 1305,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 18,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Terminology Consistency"
+    },
+    {
+      "latency_s": 0.948,
+      "input_tokens": 7367,
+      "output_tokens": 84,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 1,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Mandatory Sections Present"
+    },
+    {
+      "latency_s": 4.353,
+      "input_tokens": 7517,
+      "output_tokens": 1303,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 17,
+      "incomplete_matches": 0,
+      "report": "Geotechnical Report MW-A58_anon_modified(1).docx",
+      "rule": "Acronym Definitions and Usage"
+    },
+    {
+      "latency_s": 1.456,
+      "input_tokens": 329,
+      "output_tokens": 151,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 2,
+      "incomplete_matches": 0,
+      "report": "manual_test_input.docx",
+      "rule": "Grammar and Spelling Check"
+    },
+    {
+      "latency_s": 1.325,
+      "input_tokens": 377,
+      "output_tokens": 83,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 1,
+      "incomplete_matches": 0,
+      "report": "manual_test_input.docx",
+      "rule": "Units and Symbols Consistency"
+    },
+    {
+      "latency_s": 1.186,
+      "input_tokens": 340,
+      "output_tokens": 121,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 1,
+      "incomplete_matches": 0,
+      "report": "manual_test_input.docx",
+      "rule": "Terminology Consistency"
+    },
+    {
+      "latency_s": 1.274,
+      "input_tokens": 234,
+      "output_tokens": 133,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 1,
+      "incomplete_matches": 0,
+      "report": "manual_test_input.docx",
+      "rule": "Mandatory Sections Present"
+    },
+    {
+      "latency_s": 1.009,
+      "input_tokens": 384,
+      "output_tokens": 80,
+      "finish_reason": "stop",
+      "truncated": false,
+      "ok": true,
+      "n_matches": 1,
+      "incomplete_matches": 0,
+      "report": "manual_test_input.docx",
+      "rule": "Acronym Definitions and Usage"
+    }
+  ]
+}
